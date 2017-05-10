@@ -112,3 +112,8 @@
 4. To run the IAP driver, keep the Key push-button pressed at Reset. 
    The IAP main menu is then displayed on the HyperTerminal window.
 5. To download an application, press 1 and use the Ymodem protocol
+
+*****
+
+## 版本说明：
+- level00: 官方版本首次跑通。
