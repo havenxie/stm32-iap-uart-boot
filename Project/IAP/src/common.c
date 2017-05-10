@@ -214,14 +214,26 @@ uint32_t SerialKeyPressed(uint8_t *key)
   */
 uint8_t GetKey(void)
 {
-  uint8_t key = 0;
-
+	uint8_t key = 0;
+	uint8_t i = 0, j = 0;  
   /* Waiting for user input */
-  while (1)
-  {
-    if (SerialKeyPressed((uint8_t*)&key)) break;
-  }
-  return key;
+	while (1)
+	{
+		i++;
+		if(i > 250) 
+		{
+			i = 0;
+			j++;
+			if(j > 250) 
+			{
+				j = 0;
+				STM_EVAL_LEDToggle(LED2);
+			}
+			
+		}
+		if (SerialKeyPressed((uint8_t*)&key)) break;
+	}
+	return key;
 
 }
 
@@ -389,7 +401,7 @@ void FLASH_DisableWriteProtectionPages(void)
 void Main_Menu(void)
 {
   uint8_t key = 0;
-  
+	
   /* Get the number of block (4 or 2 pages) from where the user program will be loaded */
   BlockNbr = (FlashDestination - 0x08000000) >> 12;
 
