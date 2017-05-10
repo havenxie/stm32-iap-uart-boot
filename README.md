@@ -78,12 +78,12 @@
 
 1. 打开MDK-ARM文件夹下的IAP.uvproj工程
 2. 在工具栏(Select Target)中选择工程配置:
-    - STM32100E-EVAL: 配置成HD_VL设备
-    - STM3210E-EVAL_XL: 配置成XL设备
-    - STM32100B-EVAL: 配置成MD_VL设备    
-    - STM3210C-EVAL: 配置成CL设备
-    - STM3210B-EVAL: 配置成MD设备
-    - STM3210E-EVAL: 配置成HD设备
+    - STM32-IAP_MD_VL: 配置成MD_VL设备    
+    - STM32-IAP_HD_VL: 配置成HD_VL设备
+    - STM32-IAP_CL: 配置成CL设备
+    - STM32-IAP_MD: 配置成MD设备
+    - STM32-IAP_HD: 配置成HD设备
+    - STM32-IAP_XL: 配置成XL设备
 
 3. 编译工程
 4. 通过JLINK或者STlINK或者uart下载目标文件。
@@ -117,3 +117,7 @@
 
 ## 版本说明：
 - level00: 官方版本首次跑通。
+- level01: 抽象硬件平台，
+	+ 修改输出文件
+	+ 根据MCU的类别(暂实现6中)选择工程的配置，而不是根据开发版选择硬件平台
+	+ 去掉按键、led等外设硬件，只留下usart。
