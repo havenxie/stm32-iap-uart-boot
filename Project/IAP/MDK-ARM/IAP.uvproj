@@ -428,6 +428,11 @@
               <FileType>1</FileType>
               <FilePath>..\src\upload.c</FilePath>
             </File>
+            <File>
+              <FileName>stmflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\stmflash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1240,6 +1245,11 @@
               <FileName>upload.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\upload.c</FilePath>
+            </File>
+            <File>
+              <FileName>stmflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\stmflash.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2054,6 +2064,11 @@
               <FileType>1</FileType>
               <FilePath>..\src\upload.c</FilePath>
             </File>
+            <File>
+              <FileName>stmflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\stmflash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2866,6 +2881,11 @@
               <FileName>upload.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\upload.c</FilePath>
+            </File>
+            <File>
+              <FileName>stmflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\stmflash.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3680,6 +3700,11 @@
               <FileType>1</FileType>
               <FilePath>..\src\upload.c</FilePath>
             </File>
+            <File>
+              <FileName>stmflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\stmflash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4492,6 +4517,11 @@
               <FileName>upload.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\upload.c</FilePath>
+            </File>
+            <File>
+              <FileName>stmflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\stmflash.c</FilePath>
             </File>
           </Files>
         </Group>

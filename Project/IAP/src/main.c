@@ -24,7 +24,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "common.h"
-
+#include "stmflash.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -44,20 +44,31 @@ static void IAP_Init(void);
   */
 int main(void)
 {
+	u16 resData = 0;
+	int i = 0;
 	/* Flash unlock */
 	FLASH_Unlock();
 	/* Initialize LED2 */
 	STM_EVAL_LEDInit(LED2);
 	/* Initialize Key */       
 	STM_EVAL_PBInit(BUTTON_WAKEUP, BUTTON_MODE_GPIO);   
-
-  /* Test if Key push-button on STM3210X-EVAL Board is pressed */
+	/* Initialize USART*/
+	IAP_Init(); 
+	
+/*	IAP_FLASH_WriteFlag(0xAAAA);
+	IAP_FLASH_ReadFlag(&resData);
+	SerialPutChar((uint8_t)(resData>>8));
+	SerialPutChar((uint8_t)resData);
+	if(resData == 0xAAAA) 
+	{
+		STM_EVAL_LEDOn(LED2);
+	}
+	while(1);
+*/	
+	
+  /* If Key is pressed */
   if (STM_EVAL_PBGetState(BUTTON_WAKEUP)  == 0x01)
   { 
-    /* If Key is pressed */
-    /* Execute the IAP driver in order to re-program the Flash */
-    IAP_Init();
-
     SerialPutString("\r\n======================================================================");
     SerialPutString("\r\n=              (C) COPYRIGHT 2010 STMicroelectronics                 =");
     SerialPutString("\r\n=                                                                    =");

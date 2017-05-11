@@ -86,6 +86,7 @@ void STM_EVAL_LEDInit(Led_TypeDef Led)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
   GPIO_Init(GPIO_PORT[Led], &GPIO_InitStructure);
+  GPIO_SetBits(GPIO_PORT[Led], GPIO_PIN[Led]); 
 }
 
 /**
