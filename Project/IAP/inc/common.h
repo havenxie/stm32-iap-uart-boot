@@ -37,6 +37,7 @@ typedef  void (*pFunction)(void);
 #define CMD_STRING_SIZE       128
 
 #define ApplicationAddress    0x8003000
+#define IAP_FLASH_FLAG_ADDR   0x8002800//10KBboot + 2KBData = 8003000
 
 #if defined (STM32F10X_MD) || defined (STM32F10X_MD_VL)
  #define PAGE_SIZE                         (0x400)    /* 1 Kbyte */

@@ -24,7 +24,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "common.h"
-
+#include "stmflash.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -44,24 +44,31 @@ static void IAP_Init(void);
   */
 int main(void)
 {
-		int i = 0, j = 0;
-  /* Flash unlock */
-  FLASH_Unlock();
-
-  /* Initialize Key Button mounted on STM3210X-EVAL board */       
-  //STM_EVAL_PBInit(BUTTON_KEY, BUTTON_MODE_GPIO);   
-
-  /* Test if Key push-button on STM3210X-EVAL Board is pressed */
-  //if (STM_EVAL_PBGetState(BUTTON_KEY)  == 0x00)
-  { 
-    /* If Key is pressed */
-    /* Execute the IAP driver in order to re-program the Flash */
-    IAP_Init();
-
-	for(i = 0; i < 100; i++) {
-		for(j = 0; j < 60000; j++)
-		;
+	u16 resData = 0;
+	int i = 0;
+	/* Flash unlock */
+	FLASH_Unlock();
+	/* Initialize LED2 */
+	STM_EVAL_LEDInit(LED2);
+	/* Initialize Key */       
+	STM_EVAL_PBInit(BUTTON_WAKEUP, BUTTON_MODE_GPIO);   
+	/* Initialize USART*/
+	IAP_Init(); 
+	
+/*	IAP_FLASH_WriteFlag(0xAAAA);
+	IAP_FLASH_ReadFlag(&resData);
+	SerialPutChar((uint8_t)(resData>>8));
+	SerialPutChar((uint8_t)resData);
+	if(resData == 0xAAAA) 
+	{
+		STM_EVAL_LEDOn(LED2);
 	}
+	while(1);
+*/	
+	
+  /* If Key is pressed */
+  if (STM_EVAL_PBGetState(BUTTON_WAKEUP)  == 0x01)
+  { 
     SerialPutString("\r\n======================================================================");
     SerialPutString("\r\n=              (C) COPYRIGHT 2010 STMicroelectronics                 =");
     SerialPutString("\r\n=                                                                    =");
@@ -73,7 +80,7 @@ int main(void)
     Main_Menu ();
   }
   /* Keep the user application running */
-  //else
+  else
   {
     /* Test if user code is programmed starting from address "ApplicationAddress" */
     if (((*(__IO uint32_t*)ApplicationAddress) & 0x2FFE0000 ) == 0x20000000)
