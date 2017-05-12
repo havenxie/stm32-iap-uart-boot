@@ -107,12 +107,14 @@ void STMFLASH_Read(u32 ReadAddr,u16 *pBuffer,u16 NumToRead)
 
 void IAP_FLASH_WriteFlag(u16 flag) 
 {
+	FLASH_Unlock();
 	STMFLASH_Write(IAP_FLASH_FLAG_ADDR, &flag, 1);
+	FLASH_Lock();
 }
 
-void IAP_FLASH_ReadFlag(u16 *pData)
+uint16_t IAP_FLASH_ReadFlag(void)
 {
-	STMFLASH_Read(IAP_FLASH_FLAG_ADDR, pData, 1);   
+	return STMFLASH_ReadHalfWord(IAP_FLASH_FLAG_ADDR);   
 }
 
 

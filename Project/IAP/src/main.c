@@ -34,7 +34,7 @@ extern uint32_t JumpAddress;
 
 /* Private function prototypes -----------------------------------------------*/
 static void IAP_Init(void);
-
+static void Delay_ms( uint16_t time_ms );
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -44,10 +44,7 @@ static void IAP_Init(void);
   */
 int main(void)
 {
-	u16 resData = 0;
-	int i = 0;
-	/* Flash unlock */
-	FLASH_Unlock();
+	uint16_t update_flag = 0;
 	/* Initialize LED2 */
 	STM_EVAL_LEDInit(LED2);
 	/* Initialize Key */       
@@ -55,47 +52,25 @@ int main(void)
 	/* Initialize USART*/
 	IAP_Init(); 
 	
-/*	IAP_FLASH_WriteFlag(0xAAAA);
-	IAP_FLASH_ReadFlag(&resData);
-	SerialPutChar((uint8_t)(resData>>8));
-	SerialPutChar((uint8_t)resData);
-	if(resData == 0xAAAA) 
+	if(STM_EVAL_PBGetState(BUTTON_WAKEUP) == 0X01)//key down
 	{
-		STM_EVAL_LEDOn(LED2);
+		IAP_FLASH_WriteFlag(0xAAAA);		
 	}
-	while(1);
-*/	
 	
-  /* If Key is pressed */
-  if (STM_EVAL_PBGetState(BUTTON_WAKEUP)  == 0x01)
-  { 
-    SerialPutString("\r\n======================================================================");
-    SerialPutString("\r\n=              (C) COPYRIGHT 2010 STMicroelectronics                 =");
-    SerialPutString("\r\n=                                                                    =");
-    SerialPutString("\r\n=     In-Application Programming Application  (Version 3.3.0)        =");
-    SerialPutString("\r\n=                                                                    =");
-    SerialPutString("\r\n=                                   By MCD Application Team          =");
-    SerialPutString("\r\n======================================================================");
-    SerialPutString("\r\n\r\n");
-    Main_Menu ();
-  }
-  /* Keep the user application running */
-  else
-  {
-    /* Test if user code is programmed starting from address "ApplicationAddress" */
-    if (((*(__IO uint32_t*)ApplicationAddress) & 0x2FFE0000 ) == 0x20000000)
-    { 
-      /* Jump to user application */
-      JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
-      Jump_To_Application = (pFunction) JumpAddress;
-      /* Initialize user application's Stack Pointer */
-      __set_MSP(*(__IO uint32_t*) ApplicationAddress);
-      Jump_To_Application();
-    }
-  }
-
-  while (1)
-  {}
+	while(1)
+	{
+		update_flag = IAP_FLASH_ReadFlag();
+		if(update_flag == 0xAAAA)//has been flag,we should update
+		{
+			SerialPutString("\r\n= In-Application Programming Application  (Version 3.3.0) =");
+            Main_Menu();			
+		}
+		else//goto application
+		{
+			IAP_Jump_To_Application();
+		}
+		Delay_ms(5000);
+	}
 }
 
 
@@ -125,6 +100,20 @@ void IAP_Init(void)
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
   STM_EVAL_COMInit(COM1, &USART_InitStructure);  
+}
+ /**
+  * @file   Delay_ms
+  * @brief  毫秒延时time_ms ms
+  * @param   time_ms 延时时间
+  * @retval 无
+  */
+static void Delay_ms( uint16_t time_ms )
+{
+  uint16_t i,j;
+  for( i=0;i<time_ms;i++ )
+  {
+		for( j=0;j<4784;j++ );
+  }
 }
 
 #ifdef USE_FULL_ASSERT

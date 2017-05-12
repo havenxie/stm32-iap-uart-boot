@@ -393,6 +393,25 @@ void FLASH_DisableWriteProtectionPages(void)
   }
 }
 
+
+void IAP_Jump_To_Application(void)
+{
+/* Test if user code is programmed starting from address "ApplicationAddress" */
+	if (((*(__IO uint32_t*)ApplicationAddress) & 0x2FFE0000 ) == 0x20000000)
+	{   
+		SerialPutString("\r\n= Jump to user application  (Version 3.3.0) =");
+		/* Jump to user application */
+		JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
+		Jump_To_Application = (pFunction) JumpAddress;
+		/* Initialize user application's Stack Pointer */
+		__set_MSP(*(__IO uint32_t*) ApplicationAddress);
+		Jump_To_Application();
+	}
+	else
+	{
+		SerialPutString("\r\n= Jump to user application error (Version 3.3.0) =");
+	}
+}
 /**
   * @brief  Display the Main Menu on to HyperTerminal
   * @param  None
@@ -450,7 +469,14 @@ void Main_Menu(void)
     if (key == 0x31)
     {
       /* Download user application in the Flash */
-      SerialDownload();
+      if(0 == SerialDownload())//download right
+	  {
+		FLASH_Unlock();
+		FLASH_ErasePage(IAP_FLASH_FLAG_ADDR);
+		FLASH_Lock();
+		  
+		IAP_Jump_To_Application();
+	  }
     }
     else if (key == 0x32)
     {

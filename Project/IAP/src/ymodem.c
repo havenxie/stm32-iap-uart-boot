@@ -155,12 +155,12 @@ int32_t Ymodem_Receive (uint8_t *buf)
     {
       switch (Receive_Packet(packet_data, &packet_length, NAK_TIMEOUT))
       {
-        case 0:
+        case 0://成功收到1K
           errors = 0;
           switch (packet_length)
           {
             /* Abort by sender */
-            case - 1:
+            case - 1://接收失败
               Send_Byte(ACK);
               return 0;
             /* End of transmission */
@@ -169,27 +169,27 @@ int32_t Ymodem_Receive (uint8_t *buf)
               file_done = 1;
               break;
             /* Normal packet */
-            default:
+            default://接收成功
               if ((packet_data[PACKET_SEQNO_INDEX] & 0xff) != (packets_received & 0xff))
-              {
+              {//序号00（文件名）
                 Send_Byte(NAK);
               }
               else
               {
-                if (packets_received == 0)
+                if (packets_received == 0)//文件信息(首包)
                 {
                   /* Filename packet */
-                  if (packet_data[PACKET_HEADER] != 0)
+                  if (packet_data[PACKET_HEADER] != 0)//文件名字
                   {
                     /* Filename packet has valid data */
                     for (i = 0, file_ptr = packet_data + PACKET_HEADER; (*file_ptr != 0) && (i < FILE_NAME_LENGTH);)
                     {
-                      file_name[i++] = *file_ptr++;
+                      file_name[i++] = *file_ptr++;//保存文件名字
                     }
-                    file_name[i++] = '\0';
+                    file_name[i++] = '\0';//字符串形式
                     for (i = 0, file_ptr ++; (*file_ptr != ' ') && (i < FILE_SIZE_LENGTH);)
                     {
-                      file_size[i++] = *file_ptr++;
+                      file_size[i++] = *file_ptr++;//文件大小
                     }
                     file_size[i++] = '\0';
                     Str2Int(file_size, &size);
@@ -211,7 +211,9 @@ int32_t Ymodem_Receive (uint8_t *buf)
                     /* Erase the FLASH pages */
                     for (EraseCounter = 0; (EraseCounter < NbrOfPage) && (FLASHStatus == FLASH_COMPLETE); EraseCounter++)
                     {
+					  FLASH_Unlock();
                       FLASHStatus = FLASH_ErasePage(FlashDestination + (PageSize * EraseCounter));
+					  FLASH_Lock();
                     }
                     Send_Byte(ACK);
                     Send_Byte(CRC16);
@@ -226,15 +228,16 @@ int32_t Ymodem_Receive (uint8_t *buf)
                   }
                 }
                 /* Data packet */
-                else
+                else//文件信息保存完之后开始接收数据
                 {
                   memcpy(buf_ptr, packet_data + PACKET_HEADER, packet_length);
                   RamSource = (uint32_t)buf;
                   for (j = 0;(j < packet_length) && (FlashDestination <  ApplicationAddress + size);j += 4)
                   {
                     /* Program the data received into STM32F10x Flash */
+					FLASH_Unlock();
                     FLASH_ProgramWord(FlashDestination, *(uint32_t*)RamSource);
-
+					FLASH_Lock();
                     if (*(uint32_t*)FlashDestination != *(uint32_t*)RamSource)
                     {
                       /* End session */
@@ -256,7 +259,7 @@ int32_t Ymodem_Receive (uint8_t *buf)
           Send_Byte(CA);
           Send_Byte(CA);
           return -3;
-        default:
+        default://检查错误
           if (session_begin > 0)
           {
             errors ++;
@@ -267,7 +270,7 @@ int32_t Ymodem_Receive (uint8_t *buf)
             Send_Byte(CA);
             return 0;
           }
-          Send_Byte(CRC16);
+          Send_Byte(CRC16);//发送校验值
           break;
       }
       if (file_done != 0)
@@ -275,7 +278,7 @@ int32_t Ymodem_Receive (uint8_t *buf)
         break;
       }
     }
-    if (session_done != 0)
+    if (session_done != 0)//文件发送完成
     {
       break;
     }

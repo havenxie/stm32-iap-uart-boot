@@ -83,8 +83,9 @@ void Serial_PutString(uint8_t *s);
 void GetInputString(uint8_t * buffP);
 uint32_t FLASH_PagesMask(__IO uint32_t Size);
 void FLASH_DisableWriteProtectionPages(void);
+void IAP_Jump_To_Application(void);
 void Main_Menu(void);
-void SerialDownload(void);
+int8_t SerialDownload(void);
 void SerialUpload(void);
 
 #endif  /* _COMMON_H */
