@@ -25,6 +25,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "common.h"
 #include "ymodem.h"
+#include <string.h>
+#include <stdlib.h>
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -47,23 +49,23 @@ extern uint32_t FlashDestination;
   */
 void Int2Str(uint8_t* str, int32_t intnum)
 {
-  uint32_t i, Div = 1000000000, j = 0, Status = 0;
+	uint32_t i, Div = 1000000000, j = 0, Status = 0;
 
-  for (i = 0; i < 10; i++)
-  {
-    str[j++] = (intnum / Div) + 48;
+	for (i = 0; i < 10; i++)
+	{
+		str[j++] = (intnum / Div) + 48;
 
-    intnum = intnum % Div;
-    Div /= 10;
-    if ((str[j-1] == '0') & (Status == 0))
-    {
-      j = 0;
-    }
-    else
-    {
-      Status++;
-    }
-  }
+		intnum = intnum % Div;
+		Div /= 10;
+		if ((str[j-1] == '0') & (Status == 0))
+		{
+			j = 0;
+		}
+		else
+		{
+			Status++;
+		}
+	}
 }
 
 /**
@@ -75,85 +77,85 @@ void Int2Str(uint8_t* str, int32_t intnum)
   */
 uint32_t Str2Int(uint8_t *inputstr, int32_t *intnum)
 {
-  uint32_t i = 0, res = 0;
-  uint32_t val = 0;
+	uint32_t i = 0, res = 0;
+	uint32_t val = 0;
 
-  if (inputstr[0] == '0' && (inputstr[1] == 'x' || inputstr[1] == 'X'))
-  {
-    if (inputstr[2] == '\0')
-    {
-      return 0;
-    }
-    for (i = 2; i < 11; i++)
-    {
-      if (inputstr[i] == '\0')
-      {
-        *intnum = val;
-        /* return 1; */
-        res = 1;
-        break;
-      }
-      if (ISVALIDHEX(inputstr[i]))
-      {
-        val = (val << 4) + CONVERTHEX(inputstr[i]);
-      }
-      else
-      {
-        /* return 0, Invalid input */
-        res = 0;
-        break;
-      }
-    }
-    /* over 8 digit hex --invalid */
-    if (i >= 11)
-    {
-      res = 0;
-    }
-  }
-  else /* max 10-digit decimal input */
-  {
-    for (i = 0;i < 11;i++)
-    {
-      if (inputstr[i] == '\0')
-      {
-        *intnum = val;
-        /* return 1 */
-        res = 1;
-        break;
-      }
-      else if ((inputstr[i] == 'k' || inputstr[i] == 'K') && (i > 0))
-      {
-        val = val << 10;
-        *intnum = val;
-        res = 1;
-        break;
-      }
-      else if ((inputstr[i] == 'm' || inputstr[i] == 'M') && (i > 0))
-      {
-        val = val << 20;
-        *intnum = val;
-        res = 1;
-        break;
-      }
-      else if (ISVALIDDEC(inputstr[i]))
-      {
-        val = val * 10 + CONVERTDEC(inputstr[i]);
-      }
-      else
-      {
-        /* return 0, Invalid input */
-        res = 0;
-        break;
-      }
-    }
-    /* Over 10 digit decimal --invalid */
-    if (i >= 11)
-    {
-      res = 0;
-    }
-  }
+	if (inputstr[0] == '0' && (inputstr[1] == 'x' || inputstr[1] == 'X'))
+	{
+		if (inputstr[2] == '\0')
+		{
+			return 0;
+		}
+		for (i = 2; i < 11; i++)
+		{
+			if (inputstr[i] == '\0')
+			{
+				*intnum = val;
+				/* return 1; */
+				res = 1;
+				break;
+			}
+			if (ISVALIDHEX(inputstr[i]))
+			{
+				val = (val << 4) + CONVERTHEX(inputstr[i]);
+			}
+			else
+			{
+				/* return 0, Invalid input */
+				res = 0;
+				break;
+			}
+		}
+		/* over 8 digit hex --invalid */
+		if (i >= 11)
+		{
+			res = 0;
+		}
+	}
+	else /* max 10-digit decimal input */
+	{
+		for (i = 0;i < 11;i++)
+		{
+			if (inputstr[i] == '\0')
+			{
+				*intnum = val;
+				/* return 1 */
+				res = 1;
+				break;
+			}
+			else if ((inputstr[i] == 'k' || inputstr[i] == 'K') && (i > 0))
+			{
+				val = val << 10;
+				*intnum = val;
+				res = 1;
+				break;
+			}
+			else if ((inputstr[i] == 'm' || inputstr[i] == 'M') && (i > 0))
+			{
+				val = val << 20;
+				*intnum = val;
+				res = 1;
+				break;
+			}
+			else if (ISVALIDDEC(inputstr[i]))
+			{
+				val = val * 10 + CONVERTDEC(inputstr[i]);
+			}
+			else
+			{
+				/* return 0, Invalid input */
+				res = 0;
+				break;
+			}
+		}
+		/* Over 10 digit decimal --invalid */
+		if (i >= 11)
+		{
+			res = 0;
+		}
+	}
 
-  return res;
+	return res;
 }
 
 /**
@@ -164,27 +166,27 @@ uint32_t Str2Int(uint8_t *inputstr, int32_t *intnum)
   */
 uint32_t GetIntegerInput(int32_t * num)
 {
-  uint8_t inputstr[16];
+	uint8_t inputstr[16];
 
-  while (1)
-  {
-    GetInputString(inputstr);
-    if (inputstr[0] == '\0') continue;
-    if ((inputstr[0] == 'a' || inputstr[0] == 'A') && inputstr[1] == '\0')
-    {
-      SerialPutString("User Cancelled \r\n");
-      return 0;
-    }
+	while (1)
+	{
+		GetInputString(inputstr);
+		if (inputstr[0] == '\0') continue;
+		if ((inputstr[0] == 'a' || inputstr[0] == 'A') && inputstr[1] == '\0')
+		{
+			SerialPutString("User Cancelled \r\n");
+			return 0;
+		}
 
-    if (Str2Int(inputstr, num) == 0)
-    {
-      SerialPutString("Error, Input again: \r\n");
-    }
-    else
-    {
-      return 1;
-    }
-  }
+		if (Str2Int(inputstr, num) == 0)
+		{
+			SerialPutString("Error, Input again: \r\n");
+		}
+		else
+		{
+			return 1;
+		}
+	}
 }
 
 /**
@@ -196,15 +198,15 @@ uint32_t GetIntegerInput(int32_t * num)
 uint32_t SerialKeyPressed(uint8_t *key)
 {
 
-  if ( USART_GetFlagStatus(EVAL_COM1, USART_FLAG_RXNE) != RESET)
-  {
-    *key = (uint8_t)EVAL_COM1->DR;
-    return 1;
-  }
-  else
-  {
-    return 0;
-  }
+	if ( USART_GetFlagStatus(EVAL_COM1, USART_FLAG_RXNE) != RESET)
+	{
+		*key = (uint8_t)EVAL_COM1->DR;
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 /**
@@ -214,23 +216,10 @@ uint32_t SerialKeyPressed(uint8_t *key)
   */
 uint8_t GetKey(void)
 {
-	uint8_t key = 0;
-	uint8_t i = 0, j = 0;  
+	uint8_t key = 0; 
   /* Waiting for user input */
 	while (1)
 	{
-		i++;
-		if(i > 250) 
-		{
-			i = 0;
-			j++;
-			if(j > 250) 
-			{
-				j = 0;
-				STM_EVAL_LEDToggle(LED2);
-			}
-			
-		}
 		if (SerialKeyPressed((uint8_t*)&key)) break;
 	}
 	return key;
@@ -244,10 +233,10 @@ uint8_t GetKey(void)
   */
 void SerialPutChar(uint8_t c)
 {
-  USART_SendData(EVAL_COM1, c);
-  while (USART_GetFlagStatus(EVAL_COM1, USART_FLAG_TXE) == RESET)
-  {
-  }
+	USART_SendData(EVAL_COM1, c);
+	while (USART_GetFlagStatus(EVAL_COM1, USART_FLAG_TXE) == RESET)
+	{
+	}
 }
 
 /**
@@ -257,11 +246,13 @@ void SerialPutChar(uint8_t c)
   */
 void Serial_PutString(uint8_t *s)
 {
-  while (*s != '\0')
-  {
-    SerialPutChar(*s);
-    s++;
-  }
+#if (ENABLE_PUTSTR == 1)
+	while (*s != '\0')
+	{
+		SerialPutChar(*s);
+		s++;
+	}
+#endif
 }
 
 /**
@@ -271,37 +262,37 @@ void Serial_PutString(uint8_t *s)
   */
 void GetInputString (uint8_t * buffP)
 {
-  uint32_t bytes_read = 0;
-  uint8_t c = 0;
-  do
-  {
-    c = GetKey();
-    if (c == '\r')
-      break;
-    if (c == '\b') /* Backspace */
-    {
-      if (bytes_read > 0)
-      {
-        SerialPutString("\b \b");
-        bytes_read --;
-      }
-      continue;
-    }
-    if (bytes_read >= CMD_STRING_SIZE )
-    {
-      SerialPutString("Command string size overflow\r\n");
-      bytes_read = 0;
-      continue;
-    }
-    if (c >= 0x20 && c <= 0x7E)
-    {
-      buffP[bytes_read++] = c;
-      SerialPutChar(c);
-    }
-  }
-  while (1);
-  SerialPutString(("\n\r"));
-  buffP[bytes_read] = '\0';
+	uint32_t bytes_read = 0;
+	uint8_t c = 0;
+	do
+	{
+		c = GetKey();
+		if (c == '\r')
+		break;
+		if (c == '\b') /* Backspace */
+		{
+			if (bytes_read > 0)
+			{
+				SerialPutString("\b \b");
+				bytes_read --;
+			}
+			continue;
+		}
+		if (bytes_read >= CMD_STRING_SIZE )
+		{
+			SerialPutString("Command string size overflow\r\n");
+			bytes_read = 0;
+			continue;
+		}
+		if (c >= 0x20 && c <= 0x7E)
+		{
+			buffP[bytes_read++] = c;
+			SerialPutChar(c);
+		}
+	}
+	while (1);
+	SerialPutString(("\n\r"));
+	buffP[bytes_read] = '\0';
 }
 
 /**
@@ -311,19 +302,18 @@ void GetInputString (uint8_t * buffP)
   */
 uint32_t FLASH_PagesMask(__IO uint32_t Size)
 {
-  uint32_t pagenumber = 0x0;
-  uint32_t size = Size;
+	uint32_t pagenumber = 0x0;
+	uint32_t size = Size;
 
-  if ((size % PAGE_SIZE) != 0)
-  {
-    pagenumber = (size / PAGE_SIZE) + 1;
-  }
-  else
-  {
-    pagenumber = size / PAGE_SIZE;
-  }
-  return pagenumber;
-
+	if ((size % PAGE_SIZE) != 0)
+	{
+		pagenumber = (size / PAGE_SIZE) + 1;
+	}
+	else
+	{
+		pagenumber = size / PAGE_SIZE;
+	}
+	return pagenumber;
 }
 
 /**
@@ -333,73 +323,76 @@ uint32_t FLASH_PagesMask(__IO uint32_t Size)
   */
 void FLASH_DisableWriteProtectionPages(void)
 {
-  uint32_t useroptionbyte = 0, WRPR = 0;
-  uint16_t var1 = OB_IWDG_SW, var2 = OB_STOP_NoRST, var3 = OB_STDBY_NoRST;
-  FLASH_Status status = FLASH_BUSY;
+	uint32_t useroptionbyte = 0, WRPR = 0;
+	uint16_t var1 = OB_IWDG_SW, var2 = OB_STOP_NoRST, var3 = OB_STDBY_NoRST;
+	FLASH_Status status = FLASH_BUSY;
 
-  WRPR = FLASH_GetWriteProtectionOptionByte();
+	WRPR = FLASH_GetWriteProtectionOptionByte();
 
-  /* Test if user memory is write protected */
-  if ((WRPR & UserMemoryMask) != UserMemoryMask)
-  {
-    useroptionbyte = FLASH_GetUserOptionByte();
+	/* Test if user memory is write protected */
+	if ((WRPR & UserMemoryMask) != UserMemoryMask)
+	{
+		useroptionbyte = FLASH_GetUserOptionByte();
 
-    UserMemoryMask |= WRPR;
+		UserMemoryMask |= WRPR;
 
-    status = FLASH_EraseOptionBytes();
+		status = FLASH_EraseOptionBytes();
 
-    if (UserMemoryMask != 0xFFFFFFFF)
-    {
-      status = FLASH_EnableWriteProtection((uint32_t)~UserMemoryMask);
-    }
+		if (UserMemoryMask != 0xFFFFFFFF)
+		{
+			status = FLASH_EnableWriteProtection((uint32_t)~UserMemoryMask);
+		}
 
-    /* Test if user Option Bytes are programmed */
-    if ((useroptionbyte & 0x07) != 0x07)
-    { 
-      /* Restore user Option Bytes */
-      if ((useroptionbyte & 0x01) == 0x0)
-      {
-        var1 = OB_IWDG_HW;
-      }
-      if ((useroptionbyte & 0x02) == 0x0)
-      {
-        var2 = OB_STOP_RST;
-      }
-      if ((useroptionbyte & 0x04) == 0x0)
-      {
-        var3 = OB_STDBY_RST;
-      }
+		/* Test if user Option Bytes are programmed */
+		if ((useroptionbyte & 0x07) != 0x07)
+		{ 
+			/* Restore user Option Bytes */
+			if ((useroptionbyte & 0x01) == 0x0)
+			{
+				var1 = OB_IWDG_HW;
+			}
+			if ((useroptionbyte & 0x02) == 0x0)
+			{
+				var2 = OB_STOP_RST;
+			}
+			if ((useroptionbyte & 0x04) == 0x0)
+			{
+				var3 = OB_STDBY_RST;
+			}
+			FLASH_UserOptionByteConfig(var1, var2, var3);
+		}
 
-      FLASH_UserOptionByteConfig(var1, var2, var3);
-    }
+		if (status == FLASH_COMPLETE)
+		{
+			SerialPutString("Write Protection disabled...\r\n");
 
-    if (status == FLASH_COMPLETE)
-    {
-      SerialPutString("Write Protection disabled...\r\n");
+			SerialPutString("...and a System Reset will be generated to re-load the new option bytes\r\n");
 
-      SerialPutString("...and a System Reset will be generated to re-load the new option bytes\r\n");
-
-      /* Generate System Reset to load the new option byte values */
-      NVIC_SystemReset();
-    }
-    else
-    {
-      SerialPutString("Error: Flash write unprotection failed...\r\n");
-    }
-  }
-  else
-  {
-    SerialPutString("Flash memory not write protected\r\n");
-  }
+			/* Generate System Reset to load the new option byte values */
+			NVIC_SystemReset();
+		}
+		else
+		{
+			SerialPutString("Error: Flash write unprotection failed...\r\n");
+		}
+	}
+	else
+	{
+		SerialPutString("Flash memory not write protected\r\n");
+	}
 }
 
-
+/**
+  * @brief  Jump to user application
+  * @param  None
+  * @retval None
+  */
 void IAP_Jump_To_Application(void)
 {
-/* Test if user code is programmed starting from address "ApplicationAddress" */
+	/* Test if user code is programmed starting from address "ApplicationAddress" */
 	if (((*(__IO uint32_t*)ApplicationAddress) & 0x2FFE0000 ) == 0x20000000)
 	{   
-		SerialPutString("\r\n= Jump to user application  (Version 3.3.0) =");
+		SerialPutString("Jump to user application.\r\n");
 		/* Jump to user application */
 		JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
 		Jump_To_Application = (pFunction) JumpAddress;
@@ -409,9 +402,10 @@ void IAP_Jump_To_Application(void)
 	}
 	else
 	{
-		SerialPutString("\r\n= Jump to user application error (Version 3.3.0) =");
+		SerialPutString("Jump to user application error. \r\n");
 	}
 }
+
 /**
   * @brief  Display the Main Menu on to HyperTerminal
   * @param  None
@@ -419,13 +413,13 @@ void IAP_Jump_To_Application(void)
   */
 void Main_Menu(void)
 {
-  uint8_t key = 0;
+	//uint8_t *cmdStr = (uint8_t *)malloc(sizeof(uint8_t)*(CMD_STRING_SIZE + 1));
+	uint8_t cmdStr[CMD_STRING_SIZE] = {0};
+	/* Get the number of block (4 or 2 pages) from where the user program will be loaded */
+	BlockNbr = (FlashDestination - 0x08000000) >> 12;
 	
-  /* Get the number of block (4 or 2 pages) from where the user program will be loaded */
-  BlockNbr = (FlashDestination - 0x08000000) >> 12;
-
-  /* Compute the mask to test if the Flash memory, where the user program will be
-     loaded, is write protected */
+	/* Compute the mask to test if the Flash memory, where the user program will be
+	loaded, is write protected */
 #if defined (STM32F10X_MD) || defined (STM32F10X_MD_VL)
   UserMemoryMask = ((uint32_t)~((1 << BlockNbr) - 1));
 #else /* USE_STM3210E_EVAL */
@@ -439,77 +433,57 @@ void Main_Menu(void)
   }
 #endif /* (STM32F10X_MD) || (STM32F10X_MD_VL) */
 
+	/* Test if any page of Flash memory where program user will be loaded is write protected */
+	if ((FLASH_GetWriteProtectionOptionByte() & UserMemoryMask) != UserMemoryMask)
+	{
+		FlashProtection = 1;
+	}
+	else
+	{
+		FlashProtection = 0;
+	}
 
-  /* Test if any page of Flash memory where program user will be loaded is write protected */
-  if ((FLASH_GetWriteProtectionOptionByte() & UserMemoryMask) != UserMemoryMask)
-  {
-    FlashProtection = 1;
-  }
-  else
-  {
-    FlashProtection = 0;
-  }
+	while (1)
+	{
+		SerialPutString("\r\nIn-Application Programming Application(V 3.3.0) \r\n\n");
+		SerialPutString("Download Image To the STM32F10x Internal Flash ----> cmd_download\r\n\n");
+		SerialPutString("Upload Image From the STM32F10x Internal Flash ----> cmd_upload\r\n\n");
+		SerialPutString("Execute The New Program ---------------------------> cmd_runapp\r\n\n");
+		if(FlashProtection != 0)//There is write protected
+		{
+			SerialPutString("Disable the write protection --------------------> cmd_diswp\r\n\n");
+		}
+		SerialPutString("==========================================================\r\n\n");
+		
+		GetInputString(cmdStr);
+		if(strcmp((char *)cmdStr, CMD_DOWNLOAD_STR) == 0)
+		{
+			/* Download user application in the Flash */
+			if(0 == SerialDownload())//download right
+			{
+				FLASH_Unlock();
+				FLASH_ErasePage(IAP_FLASH_FLAG_ADDR);
+				FLASH_Lock();
 
-  while (1)
-  {
-    SerialPutString("\r\n================== Main Menu ============================\r\n\n");
-    SerialPutString("  Download Image To the STM32F10x Internal Flash ------- 1\r\n\n");
-    SerialPutString("  Upload Image From the STM32F10x Internal Flash ------- 2\r\n\n");
-    SerialPutString("  Execute The New Program ------------------------------ 3\r\n\n");
-    
-    if(FlashProtection != 0)
-    {
-      SerialPutString("  Disable the write protection ------------------------- 4\r\n\n");
-    }
-    
-    SerialPutString("==========================================================\r\n\n");
-    
-    key = GetKey();
-
-    if (key == 0x31)
-    {
-      /* Download user application in the Flash */
-      if(0 == SerialDownload())//download right
-	  {
-		FLASH_Unlock();
-		FLASH_ErasePage(IAP_FLASH_FLAG_ADDR);
-		FLASH_Lock();
-		  
-		IAP_Jump_To_Application();
-	  }
-    }
-    else if (key == 0x32)
-    {
-      /* Upload user application from the Flash */
-      SerialUpload();
-    }
-    else if (key == 0x33)
-    {
-      JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
-
-      /* Jump to user application */
-      Jump_To_Application = (pFunction) JumpAddress;
-      /* Initialize user application's Stack Pointer */
-      __set_MSP(*(__IO uint32_t*) ApplicationAddress);
-      Jump_To_Application();
-    }
-    else if ((key == 0x34) && (FlashProtection == 1))
-    {
-      /* Disable the write protection of desired pages */
-      FLASH_DisableWriteProtectionPages();
-    }
-    else
-    {
-      if (FlashProtection == 0)
-      {
-        SerialPutString("Invalid Number ! ==> The number should be either 1, 2 or 3\r");
-      }
-      else
-      {
-        SerialPutString("Invalid Number ! ==> The number should be either 1, 2, 3 or 4\r");
-      } 
-    }
-  }
+				IAP_Jump_To_Application();
+			}
+		}
+		else if(strcmp((char *)cmdStr, CMD_UPLOAD_STR) == 0)
+		{
+			/* Upload user application from the Flash */
+			SerialUpload();
+		}
+		else if(strcmp((char *)cmdStr, CMD_RUNAPP_STR) == 0)
+		{
+			/* Execute The New Program */
+			IAP_Jump_To_Application();
+		}
+		else
+		{
+			SerialPutString("Invalid CMD ! ==> The cmd should be either cmd_download, cmd_upload, cmd_runapp.\r\n\n");
+		}
+	}
+	//free(cmdStr);
 }
 
 /**

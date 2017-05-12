@@ -32,12 +32,19 @@
 /* Exported types ------------------------------------------------------------*/
 typedef  void (*pFunction)(void);
 
+/* Exported Switch  -------------------------------------------------------------------*/
+#define ENABLE_PUTSTR         1
+
 /* Exported constants --------------------------------------------------------*/
 /* Constants used by Serial Command Line Mode */
 #define CMD_STRING_SIZE       128
+#define CMD_DOWNLOAD_STR      "cmd_download"
+#define CMD_UPLOAD_STR        "cmd_upload"
+#define CMD_RUNAPP_STR        "cmd_runapp"
 
 #define ApplicationAddress    0x8003000
 #define IAP_FLASH_FLAG_ADDR   0x8002800//10KBboot + 2KBData = 8003000
+
 
 #if defined (STM32F10X_MD) || defined (STM32F10X_MD_VL)
  #define PAGE_SIZE                         (0x400)    /* 1 Kbyte */

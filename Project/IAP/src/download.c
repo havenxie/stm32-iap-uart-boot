@@ -58,7 +58,7 @@ int8_t SerialDownload(void)
     SerialPutString("\n\r Size: ");
     SerialPutString(Number);
     SerialPutString(" Bytes\r\n");
-    SerialPutString("-------------------\n");
+    SerialPutString("-------------------\r\n");
 	return 0;
   }
   else if (Size == -1)

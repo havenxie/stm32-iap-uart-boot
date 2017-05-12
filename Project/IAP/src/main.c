@@ -52,17 +52,12 @@ int main(void)
 	/* Initialize USART*/
 	IAP_Init(); 
 	
-	if(STM_EVAL_PBGetState(BUTTON_WAKEUP) == 0X01)//key down
-	{
-		IAP_FLASH_WriteFlag(0xAAAA);		
-	}
 	
 	while(1)
 	{
-		update_flag = IAP_FLASH_ReadFlag();
-		if(update_flag == 0xAAAA)//has been flag,we should update
+		update_flag = (IAP_FLASH_ReadFlag() == 0XAAAA) || (STM_EVAL_PBGetState(BUTTON_WAKEUP) == 0X01);
+		if(update_flag)//has been flag, we should update
 		{
-			SerialPutString("\r\n= In-Application Programming Application  (Version 3.3.0) =");
             Main_Menu();			
 		}
 		else//goto application
