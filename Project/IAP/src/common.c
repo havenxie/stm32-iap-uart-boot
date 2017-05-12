@@ -392,7 +392,7 @@ void IAP_Jump_To_Application(void)
 	/* Test if user code is programmed starting from address "ApplicationAddress" */
 	if (((*(__IO uint32_t*)ApplicationAddress) & 0x2FFE0000 ) == 0x20000000)
 	{   
-		SerialPutString("Jump to user application.\r\n");
+		SerialPutString("Jump to user app.\r\n\n");
 		/* Jump to user application */
 		JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
 		Jump_To_Application = (pFunction) JumpAddress;
@@ -402,7 +402,7 @@ void IAP_Jump_To_Application(void)
 	}
 	else
 	{
-		SerialPutString("Jump to user application error. \r\n");
+		SerialPutString("Jump to user app error.\r\n\n");
 	}
 }
 
@@ -459,7 +459,7 @@ void Main_Menu(void)
 		if(strcmp((char *)cmdStr, CMD_DOWNLOAD_STR) == 0)
 		{
 			/* Download user application in the Flash */
-			if(0 == SerialDownload())//download right
+			if(SerialDownload() == 0)//download completed
 			{
 				FLASH_Unlock();
 				FLASH_ErasePage(IAP_FLASH_FLAG_ADDR);
