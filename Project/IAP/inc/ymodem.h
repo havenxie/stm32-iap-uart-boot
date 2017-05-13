@@ -22,6 +22,7 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef _YMODEM_H_
 #define _YMODEM_H_
+#include "stm32f10x.h"
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -52,6 +53,9 @@
 
 #define NAK_TIMEOUT             (0x100000)
 #define MAX_ERRORS              (5)
+
+extern uint32_t FlashDestination;
+extern uint8_t file_name[FILE_NAME_LENGTH];
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */

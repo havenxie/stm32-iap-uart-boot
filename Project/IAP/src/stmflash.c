@@ -1,5 +1,5 @@
 #include "stmflash.h"
-
+#include "iap_config.h"
 /**
   * @brief  Read half words (16-bit data) of the specified address
   * @note   This function can be used for all STM32F10x devices.
@@ -105,17 +105,6 @@ void STMFLASH_Read(u32 ReadAddr,u16 *pBuffer,u16 NumToRead)
 	}
 }
 
-void IAP_FLASH_WriteFlag(u16 flag) 
-{
-	FLASH_Unlock();
-	STMFLASH_Write(IAP_FLASH_FLAG_ADDR, &flag, 1);
-	FLASH_Lock();
-}
-
-uint16_t IAP_FLASH_ReadFlag(void)
-{
-	return STMFLASH_ReadHalfWord(IAP_FLASH_FLAG_ADDR);   
-}
 
 
 

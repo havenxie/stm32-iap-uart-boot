@@ -23,54 +23,50 @@
 #define _COMMON_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "iap_config.h"
 #include "stdio.h"
 #include "string.h"
 #include "stm32f10x.h"
-#include "ymodem.h"
-#include "stm32_eval.h" 
+//#include "stm32_eval.h" 
 
-/* Exported types ------------------------------------------------------------*/
-typedef  void (*pFunction)(void);
+typedef enum 
+{
+  COM1 = 0,
+  COM2 = 1
+} COM_TypeDef;   
 
-/* Exported Switch  -------------------------------------------------------------------*/
-#define ENABLE_PUTSTR         1
+/** @addtogroup STM3210E_EVAL_LOW_LEVEL_COM
+  * @{
+  */
+#define COMn                             2
 
-/* Exported constants --------------------------------------------------------*/
-/* Constants used by Serial Command Line Mode */
-#define CMD_STRING_SIZE       128
-#define CMD_DOWNLOAD_STR      "cmd_download"
-#define CMD_UPLOAD_STR        "cmd_upload"
-#define CMD_RUNAPP_STR        "cmd_runapp"
+/**
+ * @brief Definition for COM port1, connected to USART1
+ */ 
+#define EVAL_COM1                        USART1
+#define EVAL_COM1_CLK                    RCC_APB2Periph_USART1
+#define EVAL_COM1_TX_PIN                 GPIO_Pin_9
+#define EVAL_COM1_TX_GPIO_PORT           GPIOA
+#define EVAL_COM1_TX_GPIO_CLK            RCC_APB2Periph_GPIOA
+#define EVAL_COM1_RX_PIN                 GPIO_Pin_10
+#define EVAL_COM1_RX_GPIO_PORT           GPIOA
+#define EVAL_COM1_RX_GPIO_CLK            RCC_APB2Periph_GPIOA
+#define EVAL_COM1_IRQn                   USART1_IRQn
 
-#define ApplicationAddress    0x8003000
+/**
+ * @brief Definition for COM port2, connected to USART2
+ */ 
+#define EVAL_COM2                        USART2
+#define EVAL_COM2_CLK                    RCC_APB1Periph_USART2
+#define EVAL_COM2_TX_PIN                 GPIO_Pin_2
+#define EVAL_COM2_TX_GPIO_PORT           GPIOA
+#define EVAL_COM2_TX_GPIO_CLK            RCC_APB2Periph_GPIOA
+#define EVAL_COM2_RX_PIN                 GPIO_Pin_3
+#define EVAL_COM2_RX_GPIO_PORT           GPIOA
+#define EVAL_COM2_RX_GPIO_CLK            RCC_APB2Periph_GPIOA
+#define EVAL_COM2_IRQn                   USART2_IRQn
 
-/* IAP ------------------------------------------------------- */
-#define IAP_FLASH_FLAG_ADDR 0x8002800//App区域和Bootloader区域共享信息的地址(暂定大小为2K)
-#define APPRUN_FLAG_DATA    0x0000   //APP不需要做任何处理，直接运行状态
-#define INIT_FLAG_DATA      0xFFFF   //默认标志的数据(空片子的情况)
-#define DOWNLOAD_FLAG_DATA  0xEEEE   //下载标志的数据
-#define UPLOAD_FLAG_DATA    0xDDDD   //上传标志的数据
-#define ERASE_FLAG_DATA     0xCCCC   //擦除标志的数据
 
-
-#if defined (STM32F10X_MD) || defined (STM32F10X_MD_VL)
- #define PAGE_SIZE                         (0x400)    /* 1 Kbyte */
- #define FLASH_SIZE                        (0x20000)  /* 128 KBytes */
-#elif defined STM32F10X_CL
- #define PAGE_SIZE                         (0x800)    /* 2 Kbytes */
- #define FLASH_SIZE                        (0x40000)  /* 256 KBytes */
-#elif defined STM32F10X_HD || defined (STM32F10X_HD_VL)
- #define PAGE_SIZE                         (0x800)    /* 2 Kbytes */
- #define FLASH_SIZE                        (0x80000)  /* 512 KBytes */
-#elif defined STM32F10X_XL
- #define PAGE_SIZE                         (0x800)    /* 2 Kbytes */
- #define FLASH_SIZE                        (0x100000) /* 1 MByte */
-#else 
- #error "Please select first the STM32 device to be used (in stm32f10x.h)"    
-#endif
-
-/* Compute the FLASH upload image size */  
-#define FLASH_IMAGE_SIZE                   (uint32_t) (FLASH_SIZE - (ApplicationAddress - 0x08000000))
 
 /* Exported macro ------------------------------------------------------------*/
 /* Common routines */
@@ -87,6 +83,7 @@ typedef  void (*pFunction)(void);
 #define SerialPutString(x) Serial_PutString((uint8_t*)(x))
 
 /* Exported functions ------------------------------------------------------- */
+extern void STM_EVAL_COMInit(COM_TypeDef COM, USART_InitTypeDef* USART_InitStruct);
 void Int2Str(uint8_t* str,int32_t intnum);
 uint32_t Str2Int(uint8_t *inputstr,int32_t *intnum);
 uint32_t GetIntegerInput(int32_t * num);
@@ -96,12 +93,8 @@ void SerialPutChar(uint8_t c);
 void Serial_PutString(uint8_t *s);
 void GetInputString(uint8_t * buffP);
 uint32_t FLASH_PagesMask(__IO uint32_t Size);
-void FLASH_DisableWriteProtectionPages(void);
-void IAP_Jump_To_Application(void);
-void Main_Menu(void);
-int8_t SerialDownload(void);
-void SerialUpload(void);
-
+extern void Delay_ms( uint16_t time_ms );
+extern void assert_failed(uint8_t* file, uint32_t line);
 #endif  /* _COMMON_H */
 
 /*******************(C)COPYRIGHT 2010 STMicroelectronics *****END OF FILE******/

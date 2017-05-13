@@ -24,6 +24,8 @@
   */ 
   
 /* Includes ------------------------------------------------------------------*/
+#include "ymodem.h"
+#include "iap_config.h"
 #include "common.h"
 #include "stm32f10x_flash.h"
 

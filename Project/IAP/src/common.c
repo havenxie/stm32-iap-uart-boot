@@ -24,22 +24,90 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "common.h"
-#include "ymodem.h"
 #include <string.h>
 #include <stdlib.h>
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-pFunction Jump_To_Application;
-uint32_t JumpAddress;
-uint32_t BlockNbr = 0, UserMemoryMask = 0;
-__IO uint32_t FlashProtection = 0;
-extern uint32_t FlashDestination;
+USART_TypeDef* COM_USART[COMn] = {EVAL_COM1, EVAL_COM2}; 
 
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
+GPIO_TypeDef* COM_TX_PORT[COMn] = {EVAL_COM1_TX_GPIO_PORT, EVAL_COM2_TX_GPIO_PORT};
+ 
+GPIO_TypeDef* COM_RX_PORT[COMn] = {EVAL_COM1_RX_GPIO_PORT, EVAL_COM2_RX_GPIO_PORT};
+ 
+const uint32_t COM_USART_CLK[COMn] = {EVAL_COM1_CLK, EVAL_COM2_CLK};
+
+const uint32_t COM_TX_PORT_CLK[COMn] = {EVAL_COM1_TX_GPIO_CLK, EVAL_COM2_TX_GPIO_CLK};
+ 
+const uint32_t COM_RX_PORT_CLK[COMn] = {EVAL_COM1_RX_GPIO_CLK, EVAL_COM2_RX_GPIO_CLK};
+
+const uint16_t COM_TX_PIN[COMn] = {EVAL_COM1_TX_PIN, EVAL_COM2_TX_PIN};
+
+const uint16_t COM_RX_PIN[COMn] = {EVAL_COM1_RX_PIN, EVAL_COM2_RX_PIN};
+
+#ifdef USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t* file, uint32_t line)
+{
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+
+  /* Infinite loop */
+  while (1)
+  {
+  }
+}
+#endif
+
+/**
+  * @brief  Configures COM port.
+  * @param  COM: Specifies the COM port to be configured.
+  *   This parameter can be one of following parameters:    
+  *     @arg COM1
+  *     @arg COM2  
+  * @param  USART_InitStruct: pointer to a USART_InitTypeDef structure that
+  *   contains the configuration information for the specified USART peripheral.
+  * @retval None
+  */
+void STM_EVAL_COMInit(COM_TypeDef COM, USART_InitTypeDef* USART_InitStruct)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  /* Enable GPIO clock */
+  RCC_APB2PeriphClockCmd(COM_TX_PORT_CLK[COM] | COM_RX_PORT_CLK[COM] | RCC_APB2Periph_AFIO, ENABLE);
+
+  /* Enable UART clock */
+  if (COM == COM1)
+  {
+    RCC_APB2PeriphClockCmd(COM_USART_CLK[COM], ENABLE); 
+  }
+  else
+  {
+    RCC_APB1PeriphClockCmd(COM_USART_CLK[COM], ENABLE);
+  }
+
+  /* Configure USART Tx as alternate function push-pull */
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Pin = COM_TX_PIN[COM];
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(COM_TX_PORT[COM], &GPIO_InitStructure);
+
+  /* Configure USART Rx as input floating */
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_InitStructure.GPIO_Pin = COM_RX_PIN[COM];
+  GPIO_Init(COM_RX_PORT[COM], &GPIO_InitStructure);
+
+  /* USART configuration */
+  USART_Init(COM_USART[COM], USART_InitStruct);
+    
+  /* Enable USART */
+  USART_Cmd(COM_USART[COM], ENABLE);
+}
+
 
 /**
   * @brief  Convert an Integer to a string
@@ -295,6 +363,13 @@ void GetInputString (uint8_t * buffP)
 	buffP[bytes_read] = '\0';
 }
 
+
+
+
+/**
+  * @}
+  */
+
 /**
   * @brief  Calculate the number of pages
   * @param  Size: The image size
@@ -316,178 +391,18 @@ uint32_t FLASH_PagesMask(__IO uint32_t Size)
 	return pagenumber;
 }
 
-/**
-  * @brief  Disable the write protection of desired pages
-  * @param  None
-  * @retval None
+ /**
+  * @file   Delay_ms
+  * @brief  毫秒延时time_ms ms
+  * @param   time_ms 延时时间
+  * @retval 无
   */
-void FLASH_DisableWriteProtectionPages(void)
+void Delay_ms( uint16_t time_ms )
 {
-	uint32_t useroptionbyte = 0, WRPR = 0;
-	uint16_t var1 = OB_IWDG_SW, var2 = OB_STOP_NoRST, var3 = OB_STDBY_NoRST;
-	FLASH_Status status = FLASH_BUSY;
-
-	WRPR = FLASH_GetWriteProtectionOptionByte();
-
-	/* Test if user memory is write protected */
-	if ((WRPR & UserMemoryMask) != UserMemoryMask)
-	{
-		useroptionbyte = FLASH_GetUserOptionByte();
-
-		UserMemoryMask |= WRPR;
-
-		status = FLASH_EraseOptionBytes();
-
-		if (UserMemoryMask != 0xFFFFFFFF)
-		{
-			status = FLASH_EnableWriteProtection((uint32_t)~UserMemoryMask);
-		}
-
-		/* Test if user Option Bytes are programmed */
-		if ((useroptionbyte & 0x07) != 0x07)
-		{ 
-			/* Restore user Option Bytes */
-			if ((useroptionbyte & 0x01) == 0x0)
-			{
-				var1 = OB_IWDG_HW;
-			}
-			if ((useroptionbyte & 0x02) == 0x0)
-			{
-				var2 = OB_STOP_RST;
-			}
-			if ((useroptionbyte & 0x04) == 0x0)
-			{
-				var3 = OB_STDBY_RST;
-			}
-			FLASH_UserOptionByteConfig(var1, var2, var3);
-		}
-
-		if (status == FLASH_COMPLETE)
-		{
-			SerialPutString("Write Protection disabled...\r\n");
-
-			SerialPutString("...and a System Reset will be generated to re-load the new option bytes\r\n");
-
-			/* Generate System Reset to load the new option byte values */
-			NVIC_SystemReset();
-		}
-		else
-		{
-			SerialPutString("Error: Flash write unprotection failed...\r\n");
-		}
-	}
-	else
-	{
-		SerialPutString("Flash memory not write protected\r\n");
-	}
-}
-
-/**
-  * @brief  Jump to user application
-  * @param  None
-  * @retval None
-  */
-void IAP_Jump_To_Application(void)
-{
-	/* Test if user code is programmed starting from address "ApplicationAddress" */
-	if (((*(__IO uint32_t*)ApplicationAddress) & 0x2FFE0000 ) == 0x20000000)
-	{   
-		SerialPutString("Jump to user app.\r\n\n");
-		/* Jump to user application */
-		JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
-		Jump_To_Application = (pFunction) JumpAddress;
-		/* Initialize user application's Stack Pointer */
-		__set_MSP(*(__IO uint32_t*) ApplicationAddress);
-		Jump_To_Application();
-	}
-	else
-	{
-		SerialPutString("Jump to user app error.\r\n\n");
-	}
-}
-
-/**
-  * @brief  Display the Main Menu on to HyperTerminal
-  * @param  None
-  * @retval None
-  */
-void Main_Menu(void)
-{
-	//uint8_t *cmdStr = (uint8_t *)malloc(sizeof(uint8_t)*(CMD_STRING_SIZE + 1));
-	uint8_t cmdStr[CMD_STRING_SIZE] = {0};
-	/* Get the number of block (4 or 2 pages) from where the user program will be loaded */
-	BlockNbr = (FlashDestination - 0x08000000) >> 12;
-	
-	/* Compute the mask to test if the Flash memory, where the user program will be
-	loaded, is write protected */
-#if defined (STM32F10X_MD) || defined (STM32F10X_MD_VL)
-  UserMemoryMask = ((uint32_t)~((1 << BlockNbr) - 1));
-#else /* USE_STM3210E_EVAL */
-  if (BlockNbr < 62)
+  uint16_t i,j;
+  for( i=0;i<time_ms;i++ )
   {
-    UserMemoryMask = ((uint32_t)~((1 << BlockNbr) - 1));
+		for( j=0;j<4784;j++ );
   }
-  else
-  {
-    UserMemoryMask = ((uint32_t)0x80000000);
-  }
-#endif /* (STM32F10X_MD) || (STM32F10X_MD_VL) */
-
-	/* Test if any page of Flash memory where program user will be loaded is write protected */
-	if ((FLASH_GetWriteProtectionOptionByte() & UserMemoryMask) != UserMemoryMask)
-	{
-		FlashProtection = 1;
-	}
-	else
-	{
-		FlashProtection = 0;
-	}
-
-	while (1)
-	{
-		SerialPutString("\r\nIn-Application Programming Application(V 3.3.0) \r\n\n");
-		SerialPutString("Download Image To the STM32F10x Internal Flash ----> cmd_download\r\n\n");
-		SerialPutString("Upload Image From the STM32F10x Internal Flash ----> cmd_upload\r\n\n");
-		SerialPutString("Execute The New Program ---------------------------> cmd_runapp\r\n\n");
-		if(FlashProtection != 0)//There is write protected
-		{
-			SerialPutString("Disable the write protection --------------------> cmd_diswp\r\n\n");
-		}
-		SerialPutString("==========================================================\r\n\n");
-		
-		GetInputString(cmdStr);
-		if(strcmp((char *)cmdStr, CMD_DOWNLOAD_STR) == 0)
-		{
-			/* Download user application in the Flash */
-			if(SerialDownload() == 0)//download completed
-			{
-				FLASH_Unlock();
-				FLASH_ErasePage(IAP_FLASH_FLAG_ADDR);
-				FLASH_Lock();
-
-				IAP_Jump_To_Application();
-			}
-		}
-		else if(strcmp((char *)cmdStr, CMD_UPLOAD_STR) == 0)
-		{
-			/* Upload user application from the Flash */
-			SerialUpload();
-		}
-		else if(strcmp((char *)cmdStr, CMD_RUNAPP_STR) == 0)
-		{
-			/* Execute The New Program */
-			IAP_Jump_To_Application();
-		}
-		else
-		{
-			SerialPutString("Invalid CMD ! ==> The cmd should be either cmd_download, cmd_upload, cmd_runapp.\r\n\n");
-		}
-	}
-	//free(cmdStr);
 }
-
-/**
-  * @}
-  */
-
 /*******************(C)COPYRIGHT 2010 STMicroelectronics *****END OF FILE******/
