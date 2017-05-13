@@ -1,0 +1,61 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\Haven\Desktop\STM32-IAP\Project\IAP\MDK-ARM\IAP.uvproj
+Project File Date:  05/12/2017
+
+<h2>Output:</h2>
+Build target 'STM32-IAP_HD'
+compiling main.c...
+..\src\main.c(47): warning:  #177-D: variable "update_flag" was declared but never referenced
+        uint16_t update_flag = 0;
+..\src\main.c(141): warning:  #177-D: function "Delay_ms" was declared but never referenced
+  static void Delay_ms( uint16_t time_ms )
+..\src\main.c: 2 warnings, 0 errors
+linking...
+Program Size: Code=5120 RO-data=480 RW-data=96 ZI-data=5376  
+FromELF: creating hex file...
+".\OUTPUT\STM32-IAP_HD\STM32-IAP_HD.axf" - 0 Error(s), 2 Warning(s).
+Load "C:\\Users\\Haven\\Desktop\\STM32-IAP\\Project\\IAP\\MDK-ARM\\OUTPUT\\STM32-IAP_HD\\STM32-IAP_HD.axf" 
+Set JLink Project File to "C:\Users\Haven\Desktop\STM32-IAP\Project\IAP\MDK-ARM\JLinkSettings.ini"
+* JLink Info: Device "STM32F103ZE" selected (512 KB flash, 64 KB RAM).
+ 
+JLink info:
+------------
+DLL: V4.76e, compiled Sep 20 2013 16:06:28
+Firmware: J-Link ARM V8 compiled Nov 28 2014 13:44:46
+Hardware: V8.00
+S/N : 99999994 
+Feature(s) : RDI,FlashDL,FlashBP,JFlash,GDBFULL 
+ 
+* JLink Info: Found SWD-DP with ID 0x1BA01477
+* JLink Info: Found SWD-DP with ID 0x1BA01477
+* JLink Info: Found Cortex-M3 r1p1, Little endian.
+* JLink Info: FPUnit: 6 code (BP) slots and 2 literal slots
+* JLink Info: TPIU fitted.
+* JLink Info: ETM fitted.
+ROMTableAddr = 0xE00FF003
+ 
+Target info:
+------------
+Device: STM32F103ZE
+VTarget = 3.313V
+State of Pins: 
+TCK: 0, TDI: 1, TDO: 1, TMS: 1, TRES: 1, TRST: 1
+Hardware-Breakpoints: 6
+Software-Breakpoints: 8192
+Watchpoints:          4
+JTAG speed: 2000 kHz
+ 
+Erase Done.
+Programming Done.
+Verify OK.
+tware-Breakpoints: 8192
+Watchpoints:          4
+JTAG speed: 2000 kHz
+ 
+Erase Done.
+Programming Done.
+Verify OK.

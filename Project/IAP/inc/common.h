@@ -43,7 +43,14 @@ typedef  void (*pFunction)(void);
 #define CMD_RUNAPP_STR        "cmd_runapp"
 
 #define ApplicationAddress    0x8003000
-#define IAP_FLASH_FLAG_ADDR   0x8002800//10KBboot + 2KBData = 8003000
+
+/* IAP ------------------------------------------------------- */
+#define IAP_FLASH_FLAG_ADDR 0x8002800//App区域和Bootloader区域共享信息的地址(暂定大小为2K)
+#define APPRUN_FLAG_DATA    0x0000   //APP不需要做任何处理，直接运行状态
+#define INIT_FLAG_DATA      0xFFFF   //默认标志的数据(空片子的情况)
+#define DOWNLOAD_FLAG_DATA  0xEEEE   //下载标志的数据
+#define UPLOAD_FLAG_DATA    0xDDDD   //上传标志的数据
+#define ERASE_FLAG_DATA     0xCCCC   //擦除标志的数据
 
 
 #if defined (STM32F10X_MD) || defined (STM32F10X_MD_VL)
