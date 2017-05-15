@@ -93,6 +93,7 @@ void SerialPutChar(uint8_t c);
 void Serial_PutString(uint8_t *s);
 void GetInputString(uint8_t * buffP);
 uint32_t FLASH_PagesMask(__IO uint32_t Size);
+uint8_t EraseSomePages(__IO uint32_t size);
 extern void Delay_ms( uint16_t time_ms );
 extern void assert_failed(uint8_t* file, uint32_t line);
 #endif  /* _COMMON_H */

@@ -45,16 +45,16 @@ int8_t SerialDownload(void)
   uint8_t Number[10] = "          ";
   int32_t Size = 0;
 
-  SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\n\r");
+  SerialPutString("\r\nWaiting for the file to be sent ... (press 'a' to abort)\n\r");
   Size = Ymodem_Receive(&tab_1024[0]);
   if (Size > 0)
   {
-    SerialPutString("\n\n\r Programming Completed Successfully!\n\r--------------------------------\r\n Name: ");
+    SerialPutString("\n\n\rProgramming Completed Successfully!\n\r--------------------------------\r\n Name: ");
     SerialPutString(file_name);
     Int2Str(Number, Size);
-    SerialPutString("\n\r Size: ");
+    SerialPutString("\n\rSize: ");
     SerialPutString(Number);
-    SerialPutString(" Bytes\r\n");
+    SerialPutString("Bytes\r\n");
     SerialPutString("-------------------\r\n");
 	return 0;
   }

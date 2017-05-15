@@ -41,10 +41,17 @@ int main(void)
 			case INIT_FLAG_DATA://initialze state (blank mcu)
 			case DOWNLOAD_FLAG_DATA:// download app state
 				/* Download user application in the Flash */
-				if(SerialDownload() == 0)//download completed
+				switch(SerialDownload())
 				{
-					IAP_FLASH_WriteFlag(APPRUN_FLAG_DATA); 
-					IAP_Jump_To_Application();
+					case 0: //download completed
+						IAP_FLASH_WriteFlag(APPRUN_FLAG_DATA); 
+						IAP_Jump_To_Application();
+						break;
+					case -3://Aborted by user
+						Main_Menu();
+						break;
+					default:
+						break;
 				}
 				break;
 			case UPLOAD_FLAG_DATA:// upload app state
@@ -55,8 +62,8 @@ int main(void)
 				break;
 			case ERASE_FLAG_DATA:// erase app state
 				//todo
-				
-				IAP_FLASH_WriteFlag(INIT_FLAG_DATA);	
+				EraseSomePages(FLASH_IMAGE_SIZE);
+				IAP_FLASH_WriteFlag(INIT_FLAG_DATA);			
 				break;
 			default:
 				break;

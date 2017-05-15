@@ -36,9 +36,9 @@
 uint8_t file_name[FILE_NAME_LENGTH];
 uint32_t FlashDestination = ApplicationAddress; /* Flash user program offset */
 uint16_t PageSize = PAGE_SIZE;
-uint32_t EraseCounter = 0x0;
-uint32_t NbrOfPage = 0;
-FLASH_Status FLASHStatus = FLASH_COMPLETE;
+//uint32_t EraseCounter = 0x0;
+//uint32_t NbrOfPage = 0;
+//FLASH_Status FLASHStatus = FLASH_COMPLETE;
 uint32_t RamSource;
 extern uint8_t tab_1024[1024];
 
@@ -138,6 +138,7 @@ static int32_t Receive_Packet (uint8_t *data, int32_t *length, uint32_t timeout)
   return 0;
 }
 
+
 /**
   * @brief  Receive a file using the ymodem protocol
   * @param  buf: Address of the first byte
@@ -157,7 +158,8 @@ int32_t Ymodem_Receive (uint8_t *buf)
     {
       switch (Receive_Packet(packet_data, &packet_length, NAK_TIMEOUT))
       {
-        case 0://成功收到1K
+        case 0://成功收到数据
+		  //
           errors = 0;
           switch (packet_length)
           {
@@ -166,14 +168,14 @@ int32_t Ymodem_Receive (uint8_t *buf)
               Send_Byte(ACK);
               return 0;
             /* End of transmission */
-            case 0:
+            case 0://本次文件传送结束
               Send_Byte(ACK);
               file_done = 1;
               break;
             /* Normal packet */
             default://接收成功
               if ((packet_data[PACKET_SEQNO_INDEX] & 0xff) != (packets_received & 0xff))
-              {//序号00（文件名）
+              {
                 Send_Byte(NAK);
               }
               else
@@ -208,15 +210,23 @@ int32_t Ymodem_Receive (uint8_t *buf)
 
                     /* Erase the needed pages where the user application will be loaded */
                     /* Define the number of page to be erased */
-                    NbrOfPage = FLASH_PagesMask(size);
+					if(EraseSomePages(size))
+					{
+						//Erase complete
+					}
+					else
+					{
+						//Erase failed
+					}
+//                    NbrOfPage = FLASH_PagesMask(size);
 
-                    /* Erase the FLASH pages */
-                    for (EraseCounter = 0; (EraseCounter < NbrOfPage) && (FLASHStatus == FLASH_COMPLETE); EraseCounter++)
-                    {
-					  FLASH_Unlock();
-                      FLASHStatus = FLASH_ErasePage(FlashDestination + (PageSize * EraseCounter));
-					  FLASH_Lock();
-                    }
+//                    /* Erase the FLASH pages */
+//                    for (EraseCounter = 0; (EraseCounter < NbrOfPage) && (FLASHStatus == FLASH_COMPLETE); EraseCounter++)
+//                    {
+//					  FLASH_Unlock();
+//                      FLASHStatus = FLASH_ErasePage(FlashDestination + (PageSize * EraseCounter));
+//					  FLASH_Lock();
+//                    }
                     Send_Byte(ACK);
                     Send_Byte(CRC16);
                   }
@@ -257,7 +267,7 @@ int32_t Ymodem_Receive (uint8_t *buf)
               }
           }
           break;
-        case 1:
+        case 1://用户按下了'a'或'A'
           Send_Byte(CA);
           Send_Byte(CA);
           return -3;

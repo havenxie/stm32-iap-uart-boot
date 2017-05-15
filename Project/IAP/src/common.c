@@ -391,6 +391,28 @@ uint32_t FLASH_PagesMask(__IO uint32_t Size)
 	return pagenumber;
 }
 
+uint8_t EraseSomePages(__IO uint32_t size)
+{
+	uint32_t EraseCounter = 0x0;
+	uint32_t NbrOfPage = 0;
+	FLASH_Status FLASHStatus = FLASH_COMPLETE;
+	
+	NbrOfPage = FLASH_PagesMask(size);
+
+	/* Erase the FLASH pages */
+	for (EraseCounter = 0; (EraseCounter < NbrOfPage) && (FLASHStatus == FLASH_COMPLETE); EraseCounter++)
+	{
+		FLASH_Unlock();
+		FLASHStatus = FLASH_ErasePage(ApplicationAddress + (PAGE_SIZE * EraseCounter));
+		FLASH_Lock();
+	}
+	if((EraseCounter != NbrOfPage) || (FLASHStatus != FLASH_COMPLETE))
+	{
+		return 0;
+	}
+	return 1;
+}
+
  /**
   * @file   Delay_ms
   * @brief  ºÁÃëÑÓÊ±time_ms ms
