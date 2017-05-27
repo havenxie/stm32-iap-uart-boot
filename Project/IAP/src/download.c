@@ -42,20 +42,22 @@ uint8_t tab_1024[1024] =
   */
 int8_t SerialDownload(void)
 {
-  uint8_t Number[10] = "          ";
+  uint8_t Number[10] = "";
   int32_t Size = 0;
 
-  SerialPutString("\r\nWaiting for the file to be sent ... (press 'a' to abort)\n\r");
+  //SerialPutString("\r\nWaiting for the file to be sent ... (press 'a' to abort)\n\r");
   Size = Ymodem_Receive(&tab_1024[0]);
   if (Size > 0)
   {
-    SerialPutString("\n\n\rProgramming Completed Successfully!\n\r--------------------------------\r\n Name: ");
+    SerialPutString("\r\nProgramming Completed Successfully!\r\n");
+	SerialPutString("------------------------------------\r\n");
+	SerialPutString("Name: ");
     SerialPutString(file_name);
     Int2Str(Number, Size);
-    SerialPutString("\n\rSize: ");
+    SerialPutString("\r\nSize: ");
     SerialPutString(Number);
-    SerialPutString("Bytes\r\n");
-    SerialPutString("-------------------\r\n");
+    SerialPutString("Bytes.\r\n");
+    SerialPutString("------------------------------------\r\n");
 	return 0;
   }
   else if (Size == -1)

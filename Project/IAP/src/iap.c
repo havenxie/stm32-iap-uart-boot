@@ -18,7 +18,7 @@ void IAP_FLASH_WriteFlag(uint16_t flag)
 
 uint16_t IAP_FLASH_ReadFlag(void)
 {
-	return STMFLASH_ReadHalfWord(IAP_FLASH_FLAG_ADDR);   
+	return STMFLASH_ReadHalfWord(0x8002800);   
 }
 
 
@@ -182,7 +182,7 @@ void Main_Menu(void)
 	while (1)
 	{
 		SerialPutString("\r\nIn-Application Programming Application(V 3.3.0) \r\n\n");
-		SerialPutString("Download Image To the STM32F10x Internal Flash ----> download\r\n\n");
+		SerialPutString("Download Image To the STM32F10x Internal Flash ----> update\r\n\n");
 		SerialPutString("Upload Image From the STM32F10x Internal Flash ----> upload\r\n\n");
 		SerialPutString("Execute The New Program ---------------------------> runapp\r\n\n");
 		if(FlashProtection != 0)//There is write protected
@@ -190,6 +190,7 @@ void Main_Menu(void)
 			SerialPutString("Disable the write protection --------------------> cmd_diswp\r\n\n");
 		}
 		SerialPutString("==========================================================\r\n\n");
+		SerialPutString("cmd>");
 		
 		GetInputString(cmdStr);
 		if(strcmp((char *)cmdStr, CMD_DOWNLOAD_STR) == 0)

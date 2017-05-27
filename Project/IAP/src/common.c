@@ -341,7 +341,7 @@ void GetInputString (uint8_t * buffP)
 		{
 			if (bytes_read > 0)
 			{
-				SerialPutString("\b \b");
+				//SerialPutString("\b \b");
 				bytes_read --;
 			}
 			continue;
@@ -355,7 +355,7 @@ void GetInputString (uint8_t * buffP)
 		if (c >= 0x20 && c <= 0x7E)
 		{
 			buffP[bytes_read++] = c;
-			SerialPutChar(c);
+			//SerialPutChar(c);
 		}
 	}
 	while (1);
