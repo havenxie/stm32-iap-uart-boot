@@ -45,7 +45,6 @@ int8_t SerialDownload(void)
   uint8_t Number[10] = "";
   int32_t Size = 0;
 
-  //SerialPutString("\r\nWaiting for the file to be sent ... (press 'a' to abort)\n\r");
   Size = Ymodem_Receive(&tab_1024[0]);
   if (Size > 0)
   {

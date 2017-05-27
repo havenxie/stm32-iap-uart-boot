@@ -37,7 +37,7 @@ void SerialUpload(void)
 {
   uint32_t status = 0; 
 
-  SerialPutString("\n\n\rSelect Receive File ... (press any key to abort)\n\r");
+//  SerialPutString("\n\n\rSelect Receive File ... (press any key to abort)\n\r");
 
   if (GetKey() == CRC16)
   {

@@ -335,8 +335,13 @@ void GetInputString (uint8_t * buffP)
 	do
 	{
 		c = GetKey();
-		if (c == '\r')
-		break;
+		if (c == '\n')
+		{
+			//SerialPutChar('n');
+			if(buffP[bytes_read-1] == '\r')
+				break;
+		}
+		
 		if (c == '\b') /* Backspace */
 		{
 			if (bytes_read > 0)
@@ -352,7 +357,7 @@ void GetInputString (uint8_t * buffP)
 			bytes_read = 0;
 			continue;
 		}
-		if (c >= 0x20 && c <= 0x7E)
+		if ((c >= 0x20 && c <= 0x7E) || c == '\r')
 		{
 			buffP[bytes_read++] = c;
 			//SerialPutChar(c);
@@ -360,7 +365,7 @@ void GetInputString (uint8_t * buffP)
 	}
 	while (1);
 	SerialPutString(("\n\r"));
-	buffP[bytes_read] = '\0';
+	buffP[bytes_read-1] = '\0';
 }
 
 

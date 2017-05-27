@@ -196,6 +196,7 @@ void Main_Menu(void)
 		if(strcmp((char *)cmdStr, CMD_DOWNLOAD_STR) == 0)
 		{
 			/* Download user application in the Flash */
+			SerialPutString("\n\nWaiting for the file to be sent ... (press 'a' to abort)\r\n");
 			if(SerialDownload() == 0)//download completed
 			{
 				FLASH_Unlock();
@@ -208,6 +209,7 @@ void Main_Menu(void)
 		else if(strcmp((char *)cmdStr, CMD_UPLOAD_STR) == 0)
 		{
 			/* Upload user application from the Flash */
+			SerialPutString("\n\n\rSelect Receive File ... (press any key to abort)\n\r");
 			SerialUpload();
 		}
 		else if(strcmp((char *)cmdStr, CMD_RUNAPP_STR) == 0)
