@@ -396,10 +396,11 @@ uint32_t FLASH_PagesMask(__IO uint32_t Size)
 	return pagenumber;
 }
 
-uint8_t EraseSomePages(__IO uint32_t size)
+uint8_t EraseSomePages(__IO uint32_t size, uint8_t outPutCont)
 {
 	uint32_t EraseCounter = 0x0;
 	uint32_t NbrOfPage = 0;
+	uint8_t erase_cont[3] = {0};
 	FLASH_Status FLASHStatus = FLASH_COMPLETE;
 	
 	NbrOfPage = FLASH_PagesMask(size);
@@ -410,6 +411,11 @@ uint8_t EraseSomePages(__IO uint32_t size)
 		FLASH_Unlock();
 		FLASHStatus = FLASH_ErasePage(ApplicationAddress + (PAGE_SIZE * EraseCounter));
 		FLASH_Lock();
+		if(outPutCont == 1)
+		{
+			//Int2Str(erase_cont, EraseCounter + 1);
+			//SerialPutChar(EraseCounter + 1);
+		}
 	}
 	if((EraseCounter != NbrOfPage) || (FLASHStatus != FLASH_COMPLETE))
 	{

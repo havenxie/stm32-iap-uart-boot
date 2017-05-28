@@ -210,7 +210,7 @@ int32_t Ymodem_Receive (uint8_t *buf)
 
                     /* Erase the needed pages where the user application will be loaded */
                     /* Define the number of page to be erased */
-					if(EraseSomePages(size))
+					if(EraseSomePages(size, 0))
 					{
 						//Erase complete
 					}
