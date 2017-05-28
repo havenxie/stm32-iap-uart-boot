@@ -122,7 +122,7 @@ void IAP_USART_Init(void)
   * @param  None
   * @retval None
   */
-void IAP_Jump_To_Application(void)
+int8_t IAP_Jump_To_Application(void)
 {
 	/* Test if user code is programmed starting from address "ApplicationAddress" */
 	if (((*(__IO uint32_t*)ApplicationAddress) & 0x2FFE0000 ) == 0x20000000)
@@ -134,10 +134,12 @@ void IAP_Jump_To_Application(void)
 		/* Initialize user application's Stack Pointer */
 		__set_MSP(*(__IO uint32_t*) ApplicationAddress);
 		Jump_To_Application();
+		return 0;
 	}
 	else
 	{
 		SerialPutString("Jump to user app error.\r\n\n");
+		return -1;
 	}
 }
 
@@ -196,26 +198,32 @@ void Main_Menu(void)
 		if(strcmp((char *)cmdStr, CMD_DOWNLOAD_STR) == 0)
 		{
 			/* Download user application in the Flash */
-			SerialPutString("\n\nWaiting for the file to be sent ... (press 'a' to abort)\r\n");
-			if(SerialDownload() == 0)//download completed
-			{
-				FLASH_Unlock();
-				FLASH_ErasePage(IAP_FLASH_FLAG_ADDR);
-				FLASH_Lock();
+//			SerialPutString("\n\nWaiting for the file to be sent ... (press 'a' to abort)\r\n");
+//			if(SerialDownload() == 0)//download completed
+//			{
+//				FLASH_Unlock();
+//				FLASH_ErasePage(IAP_FLASH_FLAG_ADDR);
+//				FLASH_Lock();
 
-				IAP_Jump_To_Application();
-			}
+//				IAP_Jump_To_Application();
+//			}
+			IAP_FLASH_WriteFlag(DOWNLOAD_FLAG_DATA);
+			return;
 		}
 		else if(strcmp((char *)cmdStr, CMD_UPLOAD_STR) == 0)
 		{
 			/* Upload user application from the Flash */
-			SerialPutString("\n\n\rSelect Receive File ... (press any key to abort)\n\r");
-			SerialUpload();
+//			SerialPutString("\n\n\rSelect Receive File ... (press any key to abort)\n\r");
+//			SerialUpload();
+			IAP_FLASH_WriteFlag(UPLOAD_FLAG_DATA);
+			return;
 		}
 		else if(strcmp((char *)cmdStr, CMD_RUNAPP_STR) == 0)
 		{
 			/* Execute The New Program */
-			IAP_Jump_To_Application();
+			//IAP_Jump_To_Application();
+			IAP_FLASH_WriteFlag(APPRUN_FLAG_DATA);
+			return;
 		}
 		else
 		{

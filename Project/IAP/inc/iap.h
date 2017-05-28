@@ -19,7 +19,7 @@ extern pFunction Jump_To_Application;
 extern uint32_t JumpAddress;
 
 extern void FLASH_DisableWriteProtectionPages(void);
-extern void IAP_Jump_To_Application(void);
+extern int8_t IAP_Jump_To_Application(void);
 extern void IAP_USART_Init(void);
 extern void Main_Menu(void);
 extern void IAP_FLASH_WriteFlag(uint16_t flag);
