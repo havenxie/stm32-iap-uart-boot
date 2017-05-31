@@ -66,7 +66,7 @@ int main(void)
 				//todo
 				//Int2Str(erase_cont , FLASH_IMAGE_SIZE / PAGE_SIZE);
 				SerialPutChar(FLASH_IMAGE_SIZE / PAGE_SIZE);
-				//EraseSomePages(FLASH_IMAGE_SIZE, 1);
+				EraseSomePages(FLASH_IMAGE_SIZE, 1);
 				IAP_FLASH_WriteFlag(INIT_FLAG_DATA);			
 				break;
 			default:
