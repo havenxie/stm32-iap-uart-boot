@@ -28,7 +28,7 @@ int main(void)
 {
 	uint16_t flash_flag = 0; 
 	int8_t execute_res = 1;
-	uint8_t erase_cont[3] = {0};
+	//uint8_t erase_cont[3] = {0};
 	/* Initialize USART*/
 	IAP_USART_Init();
 	
@@ -46,7 +46,7 @@ int main(void)
 			case INIT_FLAG_DATA://initialze state (blank mcu)
 				Main_Menu();
 				break;
-			case DOWNLOAD_FLAG_DATA:// download app state
+			case UPDATE_FLAG_DATA:// download app state
 				/* Download user application in the Flash */
 				execute_res = SerialDownload();				
 				if(execute_res == 0) //download completed
@@ -63,11 +63,10 @@ int main(void)
 					IAP_FLASH_WriteFlag(INIT_FLAG_DATA);
 				break;
 			case ERASE_FLAG_DATA:// erase app state
-				//todo
-				//Int2Str(erase_cont , FLASH_IMAGE_SIZE / PAGE_SIZE);
-				SerialPutChar(FLASH_IMAGE_SIZE / PAGE_SIZE);
+				//SerialPutString(FLASH_IMAGE_SIZE / PAGE_SIZE);
 				EraseSomePages(FLASH_IMAGE_SIZE, 1);
-				IAP_FLASH_WriteFlag(INIT_FLAG_DATA);			
+				IAP_FLASH_WriteFlag(INIT_FLAG_DATA);
+				//SerialPutString("A");
 				break;
 			default:
 				break;

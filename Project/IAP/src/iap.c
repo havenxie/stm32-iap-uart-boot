@@ -184,51 +184,49 @@ void Main_Menu(void)
 	while (1)
 	{
 		SerialPutString("\r\nIn-Application Programming Application(V 3.3.0) \r\n\n");
-		SerialPutString("Download Image To the STM32F10x Internal Flash ----> update\r\n\n");
-		SerialPutString("Upload Image From the STM32F10x Internal Flash ----> upload\r\n\n");
-		SerialPutString("Execute The New Program ---------------------------> runapp\r\n\n");
+		SerialPutString("Upload Image To the Internal Flash   ----> update\r\n\n");
+		SerialPutString("Upload Image From the Internal Flash ----> upload\r\n\n");
+		SerialPutString("Erase Image From the app region      ----> erase \r\n\n");
+		SerialPutString("Jump To The New Program and Run      ----> runapp\r\n\n");
 		if(FlashProtection != 0)//There is write protected
 		{
 			SerialPutString("Disable the write protection --------------------> cmd_diswp\r\n\n");
 		}
 		SerialPutString("==========================================================\r\n\n");
+		
 		SerialPutString("cmd>");
 		
 		GetInputString(cmdStr);
-		if(strcmp((char *)cmdStr, CMD_DOWNLOAD_STR) == 0)
+		
+		if(strcmp((char *)cmdStr, CMD_UPDATE_STR) == 0)
 		{
-			/* Download user application in the Flash */
-//			SerialPutString("\n\nWaiting for the file to be sent ... (press 'a' to abort)\r\n");
-//			if(SerialDownload() == 0)//download completed
-//			{
-//				FLASH_Unlock();
-//				FLASH_ErasePage(IAP_FLASH_FLAG_ADDR);
-//				FLASH_Lock();
-
-//				IAP_Jump_To_Application();
-//			}
-			IAP_FLASH_WriteFlag(DOWNLOAD_FLAG_DATA);
+			IAP_FLASH_WriteFlag(UPDATE_FLAG_DATA);
 			return;
 		}
 		else if(strcmp((char *)cmdStr, CMD_UPLOAD_STR) == 0)
 		{
-			/* Upload user application from the Flash */
-//			SerialPutString("\n\n\rSelect Receive File ... (press any key to abort)\n\r");
-//			SerialUpload();
 			IAP_FLASH_WriteFlag(UPLOAD_FLAG_DATA);
+			return;
+		}
+		else if(strcmp((char *)cmdStr, CMD_ERASE_STR) == 0)
+		{
+			IAP_FLASH_WriteFlag(ERASE_FLAG_DATA);
 			return;
 		}
 		else if(strcmp((char *)cmdStr, CMD_RUNAPP_STR) == 0)
 		{
-			/* Execute The New Program */
-			//IAP_Jump_To_Application();
 			IAP_FLASH_WriteFlag(APPRUN_FLAG_DATA);
 			return;
 		}
+		else if(strcmp((char *)cmdStr, CMD_ERROR_STR) == 0)
+		{
+			SerialPutString("Invalid CMD !\r\n\n");
+		}
 		else
 		{
-			SerialPutString("Invalid CMD ! ==> The cmd should be either download, upload, runapp.\r\n\n");
+			SerialPutString("Invalid CMD !\r\n\n");
 		}
+		
 	}
 	//free(cmdStr);
 }

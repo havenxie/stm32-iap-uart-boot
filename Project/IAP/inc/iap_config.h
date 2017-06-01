@@ -8,16 +8,18 @@
 #define ENABLE_PUTSTR         1
 
 /* Bootloader command -----------------------------------------*/
-#define CMD_DOWNLOAD_STR      "update"
+#define CMD_UPDATE_STR        "update"
 #define CMD_UPLOAD_STR        "upload"
+#define CMD_ERASE_STR		  "erase"
 #define CMD_RUNAPP_STR        "runapp"
+#define CMD_ERROR_STR         "error"
 
 /* IAP command------------------------------------------------ */
 //#define IAP_FLASH_FLAG_ADDR   (uint32_t)(ApplicationAddress - 1024 * 2)//App区域和Bootloader区域共享信息的地址(暂定大小为2K)
 #define IAP_FLASH_FLAG_ADDR   0x8002800
 #define APPRUN_FLAG_DATA      0x0000   //APP不需要做任何处理，直接运行状态
 #define INIT_FLAG_DATA        0xFFFF   //默认标志的数据(空片子的情况)
-#define DOWNLOAD_FLAG_DATA    0xEEEE   //下载标志的数据
+#define UPDATE_FLAG_DATA    0xEEEE   //下载标志的数据
 #define UPLOAD_FLAG_DATA      0xDDDD   //上传标志的数据
 #define ERASE_FLAG_DATA       0xCCCC   //擦除标志的数据
 
