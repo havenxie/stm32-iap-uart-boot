@@ -28,7 +28,7 @@ int main(void)
 {
 	uint16_t flash_flag = 0; 
 	int8_t execute_res = 1;
-	//uint8_t erase_cont[3] = {0};
+	uint8_t erase_cont[3] = {0};
 	/* Initialize USART*/
 	IAP_USART_Init();
 	
@@ -63,7 +63,9 @@ int main(void)
 					IAP_FLASH_WriteFlag(INIT_FLAG_DATA);
 				break;
 			case ERASE_FLAG_DATA:// erase app state
-				//SerialPutString(FLASH_IMAGE_SIZE / PAGE_SIZE);
+				Int2Str(erase_cont, FLASH_IMAGE_SIZE / PAGE_SIZE);
+				SerialPutString(erase_cont);
+				SerialPutString("@");
 				EraseSomePages(FLASH_IMAGE_SIZE, 1);
 				IAP_FLASH_WriteFlag(INIT_FLAG_DATA);
 				//SerialPutString("A");

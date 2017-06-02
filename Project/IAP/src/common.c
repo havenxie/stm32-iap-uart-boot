@@ -400,7 +400,7 @@ uint8_t EraseSomePages(__IO uint32_t size, uint8_t outPutCont)
 {
 	uint32_t EraseCounter = 0x0;
 	uint32_t NbrOfPage = 0;
-//	uint8_t erase_cont[4] = {0};
+	uint8_t erase_cont[3] = {0};
 	FLASH_Status FLASHStatus = FLASH_COMPLETE;
 	
 	NbrOfPage = FLASH_PagesMask(size);
@@ -413,7 +413,9 @@ uint8_t EraseSomePages(__IO uint32_t size, uint8_t outPutCont)
 		FLASH_Lock();
 		if(outPutCont == 1)
 		{
-			SerialPutString(".");
+//			Int2Str(erase_cont, EraseCounter + 1);
+//			SerialPutString(erase_cont);
+//			SerialPutString("@");
 		}
 	}
 	if((EraseCounter != NbrOfPage) || (FLASHStatus != FLASH_COMPLETE))
