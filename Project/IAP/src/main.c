@@ -64,6 +64,7 @@ int main(void)
 				break;
 			case ERASE_FLAG_DATA:// erase app state
 				Int2Str(erase_cont, FLASH_IMAGE_SIZE / PAGE_SIZE);
+				SerialPutString("@");
 				SerialPutString(erase_cont);
 				SerialPutString("@");
 				EraseSomePages(FLASH_IMAGE_SIZE, 1);

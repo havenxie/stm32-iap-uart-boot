@@ -413,9 +413,9 @@ uint8_t EraseSomePages(__IO uint32_t size, uint8_t outPutCont)
 		FLASH_Lock();
 		if(outPutCont == 1)
 		{
-//			Int2Str(erase_cont, EraseCounter + 1);
-//			SerialPutString(erase_cont);
-//			SerialPutString("@");
+			Int2Str(erase_cont, EraseCounter + 1);
+			SerialPutString(erase_cont);
+			SerialPutString("@");
 		}
 	}
 	if((EraseCounter != NbrOfPage) || (FLASHStatus != FLASH_COMPLETE))
