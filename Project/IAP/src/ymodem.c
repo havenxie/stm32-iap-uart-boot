@@ -152,6 +152,7 @@ int32_t Ymodem_Receive (uint8_t *buf)
   /* Initialize FlashDestination variable */
   FlashDestination = ApplicationAddress;
 
+  Send_Byte(CRC16);
   for (session_done = 0, errors = 0, session_begin = 0; ;)
   {
     for (packets_received = 0, file_done = 0, buf_ptr = buf; ;)
