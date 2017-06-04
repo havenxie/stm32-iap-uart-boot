@@ -69,7 +69,6 @@ int main(void)
 				SerialPutString("@");
 				EraseSomePages(FLASH_IMAGE_SIZE, 1);
 				IAP_FLASH_WriteFlag(INIT_FLAG_DATA);
-				//SerialPutString("A");
 				break;
 			default:
 				break;

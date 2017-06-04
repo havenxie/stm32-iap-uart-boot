@@ -183,11 +183,12 @@ void Main_Menu(void)
 
 	while (1)
 	{
-		SerialPutString("\r\nIn-Application Programming Application(V 3.3.0) \r\n\n");
-		SerialPutString("Upload Image To the Internal Flash   ----> update\r\n\n");
-		SerialPutString("Upload Image From the Internal Flash ----> upload\r\n\n");
-		SerialPutString("Erase Image From the app region      ----> erase \r\n\n");
-		SerialPutString("Jump To The New Program and Run      ----> runapp\r\n\n");
+		SerialPutString("\r\nIn-Application Programming Application(V 0.1.0) \r\n\n");
+		SerialPutString("Update Image To the User Flash   ----> update\r\n\n");
+		SerialPutString("Upload Image From the User Flash ----> upload\r\n\n");
+		SerialPutString("Erase Image From the app region  ----> erase\r\n\n");
+		SerialPutString("Reset To Iap Menu                ----> menu\r\n\n");
+		SerialPutString("Jump To User App                 ----> runapp\r\n\n");
 		if(FlashProtection != 0)//There is write protected
 		{
 			SerialPutString("Disable the write protection --------------------> cmd_diswp\r\n\n");
@@ -212,6 +213,10 @@ void Main_Menu(void)
 		{
 			IAP_FLASH_WriteFlag(ERASE_FLAG_DATA);
 			return;
+		}
+		else if(strcmp((char *)cmdStr, CMD_MENU_STR) == 0)
+		{
+			IAP_FLASH_WriteFlag(INIT_FLAG_DATA);
 		}
 		else if(strcmp((char *)cmdStr, CMD_RUNAPP_STR) == 0)
 		{
