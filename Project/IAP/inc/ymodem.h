@@ -34,8 +34,12 @@
 #define PACKET_HEADER           (3)
 #define PACKET_TRAILER          (2)
 #define PACKET_OVERHEAD         (PACKET_HEADER + PACKET_TRAILER)
-#define PACKET_SIZE             (128)
+#define PACKET_64_SIZE			(64)
+#define PACKET_128_SIZE         (128)
+#define PACKET_256_SIZE         (256)
+#define PACKET_512_SIZE         (512)
 #define PACKET_1K_SIZE          (1024)
+#define PACKET_2K_SIZE		    (2048)
 
 #define FILE_NAME_LENGTH        (256)
 #define FILE_SIZE_LENGTH        (16)

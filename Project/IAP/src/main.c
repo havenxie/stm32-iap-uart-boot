@@ -47,15 +47,13 @@ int main(void)
 				Main_Menu();
 				break;
 			case UPDATE_FLAG_DATA:// download app state
-				/* Download user application in the Flash */
 				execute_res = SerialDownload();				
-				if(execute_res == 0) //download completed
+				if(execute_res == 0) 
 					IAP_FLASH_WriteFlag(APPRUN_FLAG_DATA);
 				else
 					IAP_FLASH_WriteFlag(INIT_FLAG_DATA);
 				break;
 			case UPLOAD_FLAG_DATA:// upload app state
-				/* Upload user application from the Flash */
 				execute_res = SerialUpload();
 				if(execute_res == 0)
 					IAP_FLASH_WriteFlag(APPRUN_FLAG_DATA);
