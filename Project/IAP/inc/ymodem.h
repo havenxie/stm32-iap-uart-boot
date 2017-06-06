@@ -46,6 +46,7 @@
 
 #define SOH                     (0x01)  /* start of 128-byte data packet */
 #define STX                     (0x02)  /* start of 1024-byte data packet */
+#define SEH						(0x03)  /* start of 64-byte data packet */
 #define EOT                     (0x04)  /* end of transmission */
 #define ACK                     (0x06)  /* acknowledge */
 #define NAK                     (0x15)  /* negative acknowledge */

@@ -98,6 +98,9 @@ static int32_t Receive_Packet (uint8_t *data, int32_t *length, uint32_t timeout)
   }
   switch (c)
   {
+	case SEH:
+	  packet_size = PACKET_64_SIZE;
+	  break;
     case SOH:
       packet_size = PACKET_128_SIZE;
       break;
