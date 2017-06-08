@@ -11,7 +11,7 @@
     - 运行在Windows平台的上位机操作工具。
 
 3. 本篇是属于运行在STM32平台的Bootloader部分，另外两篇介绍请参阅：
-    - （链接2）
+    - [windows平台工具](https://github.com/havenxie/winapp-iap)
     - （链接3）
 
 4. 该部分作为Bootloader可运行在多个STM32F10x系列：
