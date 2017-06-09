@@ -222,15 +222,6 @@ int32_t Ymodem_Receive (uint8_t *buf)
 					{
 						//Erase failed
 					}
-//                    NbrOfPage = FLASH_PagesMask(size);
-
-//                    /* Erase the FLASH pages */
-//                    for (EraseCounter = 0; (EraseCounter < NbrOfPage) && (FLASHStatus == FLASH_COMPLETE); EraseCounter++)
-//                    {
-//					  FLASH_Unlock();
-//                      FLASHStatus = FLASH_ErasePage(FlashDestination + (PageSize * EraseCounter));
-//					  FLASH_Lock();
-//                    }
                     Send_Byte(ACK);
                     Send_Byte(CRC16);
                   }
