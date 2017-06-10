@@ -1,4 +1,4 @@
-﻿*****
+*****
 
 ## 说明
 
@@ -126,7 +126,6 @@
 
 注：bootloader部分只需要烧录一次即可，之后所有操作都通过上位机工具完成。
 
-### EWARM(IAR平台):步骤参考Keil（这里并没有去验证）
 
 *****
 
@@ -150,4 +149,9 @@
 - level03:
     + 完成update和erase部分。
     + first completed except upload
+- level04:
+	+ 裁剪工程大小
+	+ 重新构建工程结构
+	+ 添加.bat文件
+	
 
