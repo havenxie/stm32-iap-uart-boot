@@ -34,19 +34,31 @@
 #define PACKET_HEADER           (3)
 #define PACKET_TRAILER          (2)
 #define PACKET_OVERHEAD         (PACKET_HEADER + PACKET_TRAILER)
-#define PACKET_64_SIZE			(64)
-#define PACKET_128_SIZE         (128)
-#define PACKET_256_SIZE         (256)
-#define PACKET_512_SIZE         (512)
-#define PACKET_1K_SIZE          (1024)
-#define PACKET_2K_SIZE		    (2048)
+#define PACKET_8B_SIZE          (8)
+#define PACKET_16B_SIZE         (16)
+#define PACKET_32B_SIZE         (32)
+#define PACKET_64B_SIZE			(64)
+#define PACKET_128B_SIZE        (128)
+#define PACKET_256B_SIZE        (256)
+#define PACKET_512B_SIZE        (512)
+#define PACKET_1KB_SIZE         (1024)
+#define PACKET_2KB_SIZE		    (2048)
 
 #define FILE_NAME_LENGTH        (256)
 #define FILE_SIZE_LENGTH        (16)
 
 #define SOH                     (0x01)  /* start of 128-byte data packet */
 #define STX                     (0x02)  /* start of 1024-byte data packet */
-#define SEH						(0x03)  /* start of 64-byte data packet */
+#define STX_8B                  (0xA1)
+#define STX_16B                 (0xA2)
+#define STX_32B                 (0xA3)
+#define STX_64B					(0xA4)  /* start of 64-byte data packet */
+#define STX_128B                (0xA5)
+#define STX_256B                (0xA6)
+#define STX_512B				(0xA7)
+#define STX_1KB                 (0xA8)
+#define STX_2KB                 (0XA9)
+
 #define EOT                     (0x04)  /* end of transmission */
 #define ACK                     (0x06)  /* acknowledge */
 #define NAK                     (0x15)  /* negative acknowledge */

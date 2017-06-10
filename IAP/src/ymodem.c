@@ -98,15 +98,35 @@ static int32_t Receive_Packet (uint8_t *data, int32_t *length, uint32_t timeout)
   }
   switch (c)
   {
-	case SEH:
-	  packet_size = PACKET_64_SIZE;
+	case STX_8B:
+		packet_size = PACKET_8B_SIZE;
 	  break;
-    case SOH:
-      packet_size = PACKET_128_SIZE;
+	case STX_16B:
+	  packet_size = PACKET_16B_SIZE;
+	  break;
+	case STX_32B:
+	  packet_size = PACKET_32B_SIZE;
+	  break;
+	case STX_64B:
+	  packet_size = PACKET_64B_SIZE;
+	  break;
+	case STX_128B:
+	case SOH://Œ™¡ÀºÊ»›≥¨º∂÷’∂À
+      packet_size = PACKET_128B_SIZE;
       break;
-    case STX:
-      packet_size = PACKET_1K_SIZE;
+	case STX_256B:
+	  packet_size = PACKET_256B_SIZE;
+	  break;
+	case STX_512B:
+	  packet_size = PACKET_512B_SIZE;
+	  break;
+	case STX_1KB:
+	case STX://Œ™¡ÀºÊ»›≥¨º∂÷’∂À
+      packet_size = PACKET_1KB_SIZE;
       break;
+	case STX_2KB:
+		packet_size = PACKET_2KB_SIZE;
+	  break;
     case EOT:
       return 0;
     case CA:
@@ -149,7 +169,7 @@ static int32_t Receive_Packet (uint8_t *data, int32_t *length, uint32_t timeout)
   */
 int32_t Ymodem_Receive (uint8_t *buf)
 {
-  uint8_t packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD], file_size[FILE_SIZE_LENGTH], *file_ptr, *buf_ptr;
+  uint8_t packet_data[PACKET_1KB_SIZE + PACKET_OVERHEAD], file_size[FILE_SIZE_LENGTH], *file_ptr, *buf_ptr;
   int32_t i, j, packet_length, session_done, file_done, packets_received, errors, session_begin, size = 0;
 
   /* Initialize FlashDestination variable */
@@ -335,7 +355,7 @@ void Ymodem_PrepareIntialPacket(uint8_t *data, const uint8_t* fileName, uint32_t
      data[i++] = file_ptr[j++];
   }
   
-  for (j = i; j < PACKET_128_SIZE + PACKET_HEADER; j++)
+  for (j = i; j < PACKET_128B_SIZE + PACKET_HEADER; j++)
   {
     data[j] = 0;
   }
@@ -352,9 +372,9 @@ void Ymodem_PreparePacket(uint8_t *SourceBuf, uint8_t *data, uint8_t pktNo, uint
   uint8_t* file_ptr;
   
   /* Make first three packet */
-  packetSize = sizeBlk >= PACKET_1K_SIZE ? PACKET_1K_SIZE : PACKET_128_SIZE;
+  packetSize = sizeBlk >= PACKET_1KB_SIZE ? PACKET_1KB_SIZE : PACKET_128B_SIZE;
   size = sizeBlk < packetSize ? sizeBlk :packetSize;
-  if (packetSize == PACKET_1K_SIZE)
+  if (packetSize == PACKET_1KB_SIZE)
   {
      data[0] = STX;
   }
@@ -462,7 +482,7 @@ void Ymodem_SendPacket(uint8_t *data, uint16_t length)
 uint8_t Ymodem_Transmit (uint8_t *buf, const uint8_t* sendFileName, uint32_t sizeFile)
 {
   
-  uint8_t packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD];
+  uint8_t packet_data[PACKET_1KB_SIZE + PACKET_OVERHEAD];
   uint8_t FileName[FILE_NAME_LENGTH];
   uint8_t *buf_ptr, tempCheckSum ;
   uint16_t tempCRC, blkNumber;
@@ -483,17 +503,17 @@ uint8_t Ymodem_Transmit (uint8_t *buf, const uint8_t* sendFileName, uint32_t siz
   do 
   {
     /* Send Packet */
-    Ymodem_SendPacket(packet_data, PACKET_128_SIZE + PACKET_HEADER);
+    Ymodem_SendPacket(packet_data, PACKET_128B_SIZE + PACKET_HEADER);
     /* Send CRC or Check Sum based on CRC16_F */
     if (CRC16_F)
     {
-       tempCRC = Cal_CRC16(&packet_data[3], PACKET_128_SIZE);
+       tempCRC = Cal_CRC16(&packet_data[3], PACKET_128B_SIZE);
        Send_Byte(tempCRC >> 8);
        Send_Byte(tempCRC & 0xFF);
     }
     else
     {
-       tempCheckSum = CalChecksum (&packet_data[3], PACKET_128_SIZE);
+       tempCheckSum = CalChecksum (&packet_data[3], PACKET_128B_SIZE);
        Send_Byte(tempCheckSum);
     }
   
@@ -533,14 +553,14 @@ uint8_t Ymodem_Transmit (uint8_t *buf, const uint8_t* sendFileName, uint32_t siz
     do
     {
       /* Send next packet */
-      if (size >= PACKET_1K_SIZE)
+      if (size >= PACKET_1KB_SIZE)
       {
-        pktSize = PACKET_1K_SIZE;
+        pktSize = PACKET_1KB_SIZE;
        
       }
       else
       {
-        pktSize = PACKET_128_SIZE;
+        pktSize = PACKET_128B_SIZE;
       }
       Ymodem_SendPacket(packet_data, pktSize + PACKET_HEADER);
       /* Send CRC or Check Sum based on CRC16_F */
@@ -625,7 +645,7 @@ uint8_t Ymodem_Transmit (uint8_t *buf, const uint8_t* sendFileName, uint32_t siz
   packet_data[1] = 0;
   packet_data [2] = 0xFF;
 
-  for (i = PACKET_HEADER; i < (PACKET_128_SIZE + PACKET_HEADER); i++)
+  for (i = PACKET_HEADER; i < (PACKET_128B_SIZE + PACKET_HEADER); i++)
   {
      packet_data [i] = 0x00;
   }
@@ -633,9 +653,9 @@ uint8_t Ymodem_Transmit (uint8_t *buf, const uint8_t* sendFileName, uint32_t siz
   do 
   {
     /* Send Packet */
-    Ymodem_SendPacket(packet_data, PACKET_128_SIZE + PACKET_HEADER);
+    Ymodem_SendPacket(packet_data, PACKET_128B_SIZE + PACKET_HEADER);
     /* Send CRC or Check Sum based on CRC16_F */
-    tempCRC = Cal_CRC16(&packet_data[3], PACKET_128_SIZE);
+    tempCRC = Cal_CRC16(&packet_data[3], PACKET_128B_SIZE);
     Send_Byte(tempCRC >> 8);
     Send_Byte(tempCRC & 0xFF);
   
