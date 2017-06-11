@@ -103,7 +103,7 @@ int8_t IAP_RunApp(void)
 {
 	if (((*(__IO uint32_t*)ApplicationAddress) & 0x2FFE0000 ) == 0x20000000)
 	{   
-		SerialPutString(" Run to app.\r\n");
+		SerialPutString("\r\n Run to app.\r\n");
 		JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
 		Jump_To_Application = (pFunction) JumpAddress;
 		__set_MSP(*(__IO uint32_t*) ApplicationAddress);
@@ -112,7 +112,7 @@ int8_t IAP_RunApp(void)
 	}
 	else
 	{
-		SerialPutString(" Run to app error.\r\n");
+		SerialPutString("\r\n Run to app error.\r\n");
 		return -1;
 	}
 }
@@ -157,7 +157,6 @@ void IAP_Main_Menu(void)
 		{
 			SerialPutString(" diswp\r\n");
 		}
-		SerialPutString("\r\n");
 		
 		GetInputString(cmdStr);
 		
@@ -205,7 +204,7 @@ int8_t IAP_Update(void)
 	Size = Ymodem_Receive(&tab_1024[0]);
 	if (Size > 0)
 	{
-		SerialPutString(" Update Over!\r\n");
+		SerialPutString("\r\n Update Over!\r\n");
 		SerialPutString(" Name: ");
 		SerialPutString(file_name);
 		Int2Str(Number, Size);
@@ -216,17 +215,17 @@ int8_t IAP_Update(void)
 	}
 	else if (Size == -1)
 	{
-		SerialPutString(" Image Too Big!\r\n");
+		SerialPutString("\r\n Image Too Big!\r\n");
 		return -1;
 	}
 	else if (Size == -2)
 	{
-		SerialPutString(" Update failed!\r\n");
+		SerialPutString("\r\n Update failed!\r\n");
 		return -2;
 	}
 	else if (Size == -3)
 	{
-		SerialPutString(" Aborted by user.\r\n");
+		SerialPutString("\r\n Aborted by user.\r\n");
 		return -3;
 	}
 	else
@@ -269,7 +268,7 @@ int8_t IAP_Erase(void)
 {
 	uint8_t erase_cont[3] = {0};
 	Int2Str(erase_cont, FLASH_IMAGE_SIZE / PAGE_SIZE);
-	SerialPutString("@");
+	SerialPutString(" @");//ÒªÓÐ¿Õ¸ñ£¬±ÜÃâbug
 	SerialPutString(erase_cont);
 	SerialPutString("@");
 	if(EraseSomePages(FLASH_IMAGE_SIZE, 1))
