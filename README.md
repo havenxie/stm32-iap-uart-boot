@@ -1,6 +1,6 @@
 ﻿**
 
-## 说明
+## STM32串口IAP的bootloader部分使用说明
 
 1. 该项目实现通过PC的串口对STM32系列MCU进行IAP。
 
@@ -124,7 +124,7 @@
 
 8. 打开上位机工具，通过串口和MCU进行连接。
 
-9. 选择需要烧入用户应用程序（应用程序app的设置请看另一篇）。
+9. 选择需要烧入用户应用程序（[应用程序app的设置请点击此处](https://github.com/havenxie/stm32-iap-app) ）。
 
 10. 根据你的需求选择更新app、读出app、擦除app、app进入iap模式、复位运行app等操作。
 
