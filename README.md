@@ -1,5 +1,4 @@
-﻿**
-
+﻿
 ## STM32串口IAP的bootloader部分使用说明
 
 1. 该项目实现通过PC的串口对STM32系列MCU进行IAP。
