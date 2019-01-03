@@ -159,5 +159,16 @@
 	+ 添加.bat文件
 
 - 用户使用master版本即可。
+
+
+*****
+
+## 更新
+
+> 代码时隔一年多再次更新，增加了通过后备寄存器来存储各种状态标志，使用方法见下：
+
+选择iap_config.h文件中的`define USE_BKP_SAVE_FLAG     1  //1:使用后备寄存器存储flag标志，0:使用flash存储flag标志（之前的版本就是这样）`
+注意app部分的USE_BKP_SAVE_FLAG值要和bootloader保持一致
+
 	
 

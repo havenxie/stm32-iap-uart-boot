@@ -312,6 +312,7 @@ void GetInputString (uint8_t * buffP)
 	uint8_t c = 0;
 	do
 	{
+		//SerialPutChar('a');
 		c = GetKey();
 		if (c == '\n')
 		{

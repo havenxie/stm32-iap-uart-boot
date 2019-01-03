@@ -9,13 +9,15 @@ extern pFunction Jump_To_Application;
 extern uint32_t JumpAddress;
 
 
-extern void IAP_FLASH_WriteFlag(uint16_t flag);
-extern uint16_t IAP_FLASH_ReadFlag(void);
-extern void IAP_USART_Init(void);
+extern void IAP_Init(void);
+extern uint16_t IAP_ReadFlag(void);
+extern void IAP_WriteFlag(uint16_t flag);
 extern int8_t IAP_RunApp(void);
 extern void IAP_Main_Menu(void);
 extern int8_t IAP_Update(void);
 extern int8_t IAP_Upload(void);
 extern int8_t IAP_Erase(void);
+
+
 
 #endif

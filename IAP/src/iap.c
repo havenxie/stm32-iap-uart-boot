@@ -67,37 +67,52 @@ static void FLASH_DisableWriteProtectionPages(void)
 
 
 /************************************************************************/
-void IAP_FLASH_WriteFlag(uint16_t flag) 
+void IAP_WriteFlag(uint16_t flag)
 {
+#if (USE_BKP_SAVE_FLAG == 1)
+	PWR->CR |= PWR_CR_DBP;
+	BKP_WriteBackupRegister(IAP_FLAG_ADDR, flag);
+	PWR->CR &= ~PWR_CR_DBP;
+#else 
 	FLASH_Unlock();
-	STMFLASH_Write(IAP_FLASH_FLAG_ADDR, &flag, 1);
+	STMFLASH_Write(IAP_FLAG_ADDR, &flag, 1);
 	FLASH_Lock();
+#endif	
 }
 
-
 /************************************************************************/
-uint16_t IAP_FLASH_ReadFlag(void)
+uint16_t IAP_ReadFlag(void)
 {
-	return STMFLASH_ReadHalfWord(IAP_FLASH_FLAG_ADDR);   
+#if (USE_BKP_SAVE_FLAG == 1)
+	return BKP_ReadBackupRegister(IAP_FLAG_ADDR);
+#else
+	return STMFLASH_ReadHalfWord(IAP_FLAG_ADDR);  
+#endif	
 }
 
 
 /************************************************************************/
 void IAP_USART_Init(void)
 {
-  USART_InitTypeDef USART_InitStructure;
+    USART_InitTypeDef USART_InitStructure;
 
-  USART_InitStructure.USART_BaudRate = 115200;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+    USART_InitStructure.USART_BaudRate = 115200;
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_No;
+    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
-  STM_EVAL_COMInit(&USART_InitStructure);  
+    STM_EVAL_COMInit(&USART_InitStructure);  
 }
 
-
+void IAP_Init(void)
+{
+    IAP_USART_Init();
+#if (USE_BKP_SAVE_FLAG == 1)
+	RCC_APB1PeriphClockCmd(RCC_APB1ENR_PWREN | RCC_APB1ENR_BKPEN , ENABLE); 
+#endif
+}
 /************************************************************************/
 int8_t IAP_RunApp(void)
 {
@@ -147,7 +162,7 @@ void IAP_Main_Menu(void)
 	}
 	while (1)
 	{
-		SerialPutString("\r\n IAP Main Menu (V 0.1.4)\r\n");
+		SerialPutString("\r\n IAP Main Menu (V 0.2.0)\r\n");
 		SerialPutString(" update\r\n");
 		SerialPutString(" upload\r\n");
 		SerialPutString(" erase\r\n");
@@ -159,29 +174,29 @@ void IAP_Main_Menu(void)
 		}
 		
 		GetInputString(cmdStr);
-		
+
 		if(strcmp((char *)cmdStr, CMD_UPDATE_STR) == 0)
 		{
-			IAP_FLASH_WriteFlag(UPDATE_FLAG_DATA);
+			IAP_WriteFlag(UPDATE_FLAG_DATA);
 			return;
 		}
 		else if(strcmp((char *)cmdStr, CMD_UPLOAD_STR) == 0)
 		{
-			IAP_FLASH_WriteFlag(UPLOAD_FLAG_DATA);
+			IAP_WriteFlag(UPLOAD_FLAG_DATA);
 			return;
 		}
 		else if(strcmp((char *)cmdStr, CMD_ERASE_STR) == 0)
 		{
-			IAP_FLASH_WriteFlag(ERASE_FLAG_DATA);
+			IAP_WriteFlag(ERASE_FLAG_DATA);
 			return;
 		}
 		else if(strcmp((char *)cmdStr, CMD_MENU_STR) == 0)
 		{
-			IAP_FLASH_WriteFlag(INIT_FLAG_DATA);
+			IAP_WriteFlag(INIT_FLAG_DATA);
 		}
 		else if(strcmp((char *)cmdStr, CMD_RUNAPP_STR) == 0)
 		{
-			IAP_FLASH_WriteFlag(APPRUN_FLAG_DATA);
+			IAP_WriteFlag(APPRUN_FLAG_DATA);
 			return;
 		}
 		else if(strcmp((char *)cmdStr, CMD_DISWP_STR) == 0)

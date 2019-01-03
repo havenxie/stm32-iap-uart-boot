@@ -25,7 +25,7 @@
 /* Includes ------------------------------------------------------------------*/
 /* Uncomment the line below to enable peripheral header file inclusion */
 /* #include "stm32f10x_adc.h" */
-/* #include "stm32f10x_bkp.h" */
+#include "stm32f10x_bkp.h" 
 /* #include "stm32f10x_can.h" */
 /* #include "stm32f10x_crc.h" */
 /* #include "stm32f10x_dac.h" */
