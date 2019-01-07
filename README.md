@@ -1,22 +1,22 @@
 ﻿
-## STM32串口IAP的bootloader部分使用说明
+## STM32串口IAP的boot部分使用说明
 
 1. 该项目实现通过PC的串口对STM32系列MCU进行IAP。
 
 2. 该项目包含三个部分（三套代码）：
     
-    - 运行在STM32平台的Bootloader；
+    - 运行在STM32平台的Boot；
     - 运行在STM32平台的App(我做了两个，一个是支持usmart的重量版，一个是很简洁的轻量版)；
     - 运行在Windows平台的上位机操作工具。
 
-3. 本篇是属于运行在STM32平台的Bootloader部分，另外两篇介绍请参阅：
+3. 本篇是属于运行在STM32平台的Boot部分，另外两篇介绍请参阅：
 
     - [windows平台操作工具](https://github.com/havenxie/winapp-iap-uart)
     - [STM32平台的APP(支持USMART的版本)](https://github.com/havenxie/stm32-iap-uart-app)     
 	- [STM32平台的APP(轻量版)](https://github.com/havenxie/stm32-iap-uart-app_lite)
     
 
-4. 该部分作为Bootloader可运行在多个STM32F10x系列：
+4. 该部分作为Boot可运行在多个STM32F10x系列：
     
     CL系列、XL系列、HD系列、HD_VL系列、MD系列、MD_VL系列、LD系列、LD_VL系列。
 	
@@ -111,9 +111,9 @@
 
 3. 在iap_config.h文件中设置你的用户应用程序(app)的起始地址ApplicationAddress（我这里是0x8003000) 。设置用来存储标志信息的flash地址IAP_FLASH_FLAG_ADDR（我这里的是0x8002800，即0X8003000-2KByte）
 
-4. 在option->target->1ROM中设置bootloader的起始地址是0x8000000，设置你为bootloader分配的flash空间大小（我这里是0x3000）。通过第三项和第四项的设置你会知道，我把flash在逻辑上分为3个部分：
+4. 在option->target->1ROM中设置boot的起始地址是0x8000000，设置你为boot分配的flash空间大小（我这里是0x3000）。通过第三项和第四项的设置你会知道，我把flash在逻辑上分为3个部分：
 
-    + 第一部分分了10KByte，用来存储bootloader的代码；
+    + 第一部分分了10KByte，用来存储boot的代码；
     + 第二部分分了2KByte，用来存储一些用于状态标志的数据（用户也可以把一些数据信息保留在这里，只要不放在该区域的前两个字节即可）
     + 剩余的部分都是用来存储用户应用程序的。也就是说你还有（flash总大小 - 12KByte）的空间可以使用。
 
@@ -129,7 +129,7 @@
 
 10. 根据你的需求选择更新app、读出app、擦除app、app进入iap模式、复位运行app等操作。
 
-注：bootloader部分只需要烧录一次即可，之后所有操作都通过上位机工具完成。
+注：boot部分只需要烧录一次即可，之后所有操作都通过上位机工具完成。
 
 
 *****
@@ -150,7 +150,7 @@
 - level01: 抽象硬件平台，
 	+ 修改输出文件
 	+ 根据MCU的类别(暂实现6种)选择工程的配置，而不是根据开发版选择硬件平台
-    + 使bootloader和app识别相同的指令。
+    + 使boot和app识别相同的指令。
 - level02：处理不同情况下各功能之间跳转。
 - level03:
     + 完成update和erase部分。
@@ -170,7 +170,7 @@
 > 代码时隔一年多再次更新，增加了通过后备寄存器来存储各种状态标志，使用方法见下：
 
 选择iap_config.h文件中的`define USE_BKP_SAVE_FLAG     1  //1:使用后备寄存器存储flag标志，0:使用flash存储flag标志（之前的版本就是这样）`
-注意app部分的USE_BKP_SAVE_FLAG值要和bootloader保持一致
+注意app部分的USE_BKP_SAVE_FLAG值要和boot保持一致
 
 	
 
