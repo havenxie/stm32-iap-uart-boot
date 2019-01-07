@@ -10,8 +10,10 @@
     - 运行在Windows平台的上位机操作工具。
 
 3. 本篇是属于运行在STM32平台的Bootloader部分，另外两篇介绍请参阅：
-    - [windows平台操作工具](https://github.com/havenxie/winapp-iap)
-    - [STM32平台的APP(支持USMART的版本)](https://github.com/havenxie/stm32-iap-app)     [STM32平台的APP(轻量版)](https://github.com/havenxie/stm32-iap-app_lite)
+
+    - [windows平台操作工具](https://github.com/havenxie/winapp-iap-uart)
+    - [STM32平台的APP(支持USMART的版本)](https://github.com/havenxie/stm32-iap-uart-app)     
+	- [STM32平台的APP(轻量版)](https://github.com/havenxie/stm32-iap-uart-app_lite)
     
 
 4. 该部分作为Bootloader可运行在多个STM32F10x系列：
@@ -123,7 +125,7 @@
 
 8. 打开上位机工具，通过串口和MCU进行连接。
 
-9. 选择需要烧入用户应用程序（[应用程序app的设置请点击此处](https://github.com/havenxie/stm32-iap-app) ）。
+9. 选择需要烧入用户应用程序（[应用程序app的设置请点击此处](https://github.com/havenxie/stm32-iap-uart-app) ）。
 
 10. 根据你的需求选择更新app、读出app、擦除app、app进入iap模式、复位运行app等操作。
 
