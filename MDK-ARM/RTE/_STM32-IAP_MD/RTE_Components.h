@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'IAP' 
+ * Project: 'IAP-UART' 
  * Target:  'STM32-IAP_MD' 
  */
 
